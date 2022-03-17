@@ -2,6 +2,20 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+How to Install :
+1. Go to main branch
+2. Download nvm + npm + node (or whatever that is needed)
+3. Clone repository `git clone https://github.com/Kyzure/nft-twitter-relation.git`
+4. Open command prompt and go to directory where you clone the repository
+5. Run the command: `npm install` (idk if this works)
+
+How to Edit (Once you install all the stuff):
+1. Create new branch (Unless u wanna push to main lmao) `git checkout -b your-branch-name`
+2. Run the command: `npm start` (to start locally at localhost 3000)
+3. "Edit the code and see changes"
+4. Push to your branch: `git push your-branch-name`
+5. Do merge request with your branch and main (Get someone to check and merge it)
+
 ## Available Scripts
 
 In the project directory, you can run:
