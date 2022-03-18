@@ -31,17 +31,17 @@ const theme = createTheme({
   },
   palette: {
     primary: {
+      lighter: '#E0E0E0',
+      light: '#454545',
       main: '#202020',
-      dark: '#454545'
+      dark: '#151515',
+      darker: '#111111'
     },
     secondary: {
       main: '#BB86FC'
     },
     background: {
       default: "#111111"
-    },
-    tertiary: {
-      main: '#E0E0E0'
     },
     text: {
       primary: '#E0E0E0',
