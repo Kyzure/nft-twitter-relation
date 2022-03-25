@@ -3,23 +3,29 @@ import '../styles/Dashboard.scss';
 import DisplayChart from './DisplayChart.js';
 
 import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
 import CssBaseline from '@mui/material/CssBaseline';
 
 function Dashboard(props) {
+  // Use this is we want to show multiple charts
+  /*
+  const charts = props.dataList.map((data) => {
+    return <DisplayChart key={ data.id } data={ data }/>
+  }); 
+  */
+ const charts = () => {
+   if (props.dataList.length > 0) {
+     return <DisplayChart data={ props.dataList[props.dataList.length - 1] }/>
+   }
+ }
+
   return (
     <Box
       sx={{ flexGrow: 1, p: 3,
       width: `cal(100% - ${props.drawerWidth - 300 }px)`,
+      paddingTop: '50px',
       paddingLeft: `${props.drawerWidth + 10}px`}}>
       <CssBaseline />
-      <Stack alignItems="center" direction="row" spacing="40px" className="dashboard">
-        <DisplayChart />
-        <DisplayChart />
-        <DisplayChart />
-        <DisplayChart />
-      </Stack>
+      { charts() }
     </Box>
   );
 }

@@ -1,6 +1,5 @@
 import * as React from 'react';
 import '../styles/App.scss';
-import Header from '../components/Header.js';
 import SideDrawer from '../components/SideDrawer.js';
 import Dashboard from '../components/Dashboard.js';
 
@@ -52,15 +51,25 @@ const theme = createTheme({
 });
 
 function App() {
-  const [drawerWidth, setDrawerSize] = React.useState(350);
+  const drawerWidth = 350
   const [marketplace, setMarketplace] = React.useState("OpenSea");
+  const [dataList, setDataList] = React.useState([]);
   
   return (
     <ThemeProvider theme={theme}>
       <ScopedCssBaseline enableColorScheme={true}>
         <CssBaseline />
-        <SideDrawer drawerWidth={ drawerWidth } marketplace={ marketplace } setMarketplace={ setMarketplace } />
-        <Dashboard drawerWidth={ drawerWidth } />
+        <SideDrawer
+          drawerWidth={ drawerWidth } 
+          marketplace={ marketplace } 
+          setMarketplace={ setMarketplace }
+          dataList={ dataList }
+          setDataList={ setDataList }/>
+        <Dashboard 
+          drawerWidth={ drawerWidth }
+          marketplace={ marketplace }
+          dataList={ dataList }
+          setDataList={ setDataList }/>
       </ScopedCssBaseline>
     </ThemeProvider>
   );
