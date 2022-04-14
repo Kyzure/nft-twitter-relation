@@ -5,4 +5,4 @@ async function getTwitterUserNames() {
   return collectionData.map(c => c.twitter_username).filter(Boolean);
 }
 
-module.exports = getTwitterUserNames();
+module.exports = getTwitterUserNames;
