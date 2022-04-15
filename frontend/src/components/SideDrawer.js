@@ -2,6 +2,7 @@ import * as React from 'react';
 import DropdownSelect from './DropdownSelect.js';
 import axios from "axios";
 
+import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
@@ -12,9 +13,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import GitHubIcon from '@mui/icons-material/GitHub';
-import SearchIcon from '@mui/icons-material/Search';
 import { styled } from '@mui/material/styles';
-import InputAdornment from '@mui/material/InputAdornment';
 
 const TextFieldStyled = styled(TextField)(({ theme }) => ({
   '& label.Mui-focused': {
@@ -51,13 +50,19 @@ function SideDrawer(props) {
     }
   }));
 
-  const selectNft = (event) => {
+  const selectMarketplace = (event) => {
     props.setMarketplace(event.target.value);
+    props.setCollection([]);
   };
 
-  const nftOptions = ["OpenSea", "LooksRare", "Rarible"];
+  const selectCollection = (event, newValue) => {
+    props.setCollection([...newValue]);
+  };
+
+  const marketplaceOptions = ["OpenSea", "LooksRare", "Rarible"];
+  const collectionOptions = ["Ayy", "Bee", "Cee", "Dee", "Ee", "Eff", "Gee", "Aitch", "Aye", "Jay"]
   const inputRef = React.useRef(null);
-  const baseURL = "http://localhost:5000/"
+  const baseURL = "http://localhost:5000/";
 
   const [id, setId] = React.useState(1)
 
@@ -74,11 +79,6 @@ function SideDrawer(props) {
           return [...old, data]
         });
     });
-  }
-
-  function SearchForNft(e) {
-    e.preventDefault();
-    GetData(inputRef.current.value, props.marketplace);
   }
 
   return (
@@ -104,7 +104,9 @@ function SideDrawer(props) {
                 <GitHubIcon size="large" />
               </IconButton>
             </Toolbar>
+
             <Divider sx={{ width:'85%', margin: 'auto' }} />
+
             <Stack alignItems="center" direction="column" spacing="25px" sx={{ padding: "50px 0 0 15px" }}>
               <Stack
                 alignItems="left"
@@ -118,47 +120,38 @@ function SideDrawer(props) {
                   sx={{ width: "100%", padding: "0 0 0 0" }}
                   value={ props.marketplace }
                   label="NFT Marketplace"
-                  selectOption={ selectNft }
-                  options={ nftOptions } />
+                  selectOption={ selectMarketplace }
+                  options={ marketplaceOptions } />
               </Stack>
+
               <Divider sx={{ width:'85%' }} />
+
               <Stack
                 alignItems="left"
                 direction="column"
                 spacing="20px"
                 sx={{ width: "100%" }}>
                 <Typography color="text.main" variant="h6">
-                  Search for NFT collection
+                  Select NFT collection
                 </Typography>
-                <Box
-                  sx={{ width: "100%" }}
-                  component="form"
-                  noValidate
-                  autoComplete="off"
-                  onSubmit={ SearchForNft }>
-                  <TextFieldStyled
-                    sx={{ width: "85%" }}
-                    label="Search a NFT collection"
-                    type="search"
-                    size="small"
-                    variant="outlined"
-                    inputRef={ inputRef }
-                    InputProps={{
-                      endAdornment: 
-                        <InputAdornment position="end">
-                          <IconButtonStyled
-                            type="submit"
-                            disableRipple={true}
-                            aria-label="Search"
-                            onClick={ SearchForNft }
-                            label="Search">
-                              <SearchIcon color="secondary"/>
-                          </IconButtonStyled>
-                        </InputAdornment>
-                    }}/>
-                </Box>
+                <Autocomplete
+                  multiple
+                  id="tags-standard"
+                  onChange={ selectCollection }
+                  options={ collectionOptions }
+                  getOptionLabel={(option) => option}
+                  defaultValue={ collectionOptions.length === 0 ? [] : [collectionOptions[0]] }
+                  renderInput={(params) => (
+                    <TextFieldStyled
+                      {...params}
+                      variant="outlined"
+                      label={"Collections from " + props.marketplace}
+                    />
+                  )}
+                  value={ props.collection }
+                />
               </Stack>
-              <Divider sx={{ width:'85%' }} />
+
             </Stack>
           </Box>
         </DrawerStyled>
