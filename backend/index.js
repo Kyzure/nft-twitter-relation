@@ -21,24 +21,44 @@ app.get('/all-collections-info', (req, res) => {
     });
 });
 
-app.get('/tweets/:slug', (req, res) => {
+app.get('/tweets/:slug', async (req, res) => {
     const slug = req.params.slug;
     const body = req.body;
     if (!body || !body.startDate || !body.endDate) {
         res.status(400).send("Missing startDate / endDate in req body");
+        return;
     }
-    const startDate = new Date(body.startDate);
-    const endDate = new Date(body.endDate);
-    mysqlConnection.query(`
-    SELECT C.* FROM opensea_top100 as A, tw_user as B, tw_tweet as C
-    WHERE A.twitter_username = B.username
-    AND B.user_id = C.author_id
-    AND A.slug = ?
-    AND C.created BETWEEN ? AND ?;
-    `, [slug, startDate, endDate], (err, results) => {
-        if (err) res.status(500).send(err);
-        res.send(results);
+    let startDate = new Date(new Date(body.startDate).setUTCHours(0, 0, 0, 0));
+    const endDate = new Date(new Date(body.endDate).setUTCHours(0, 0, 0, 0));
+    const msInDay = 1000 * 60 * 60 * 24;
+    const obj = {};
+    while (startDate <= endDate) {
+        try {
+            const endOfDay = new Date(startDate.valueOf() + msInDay - 1);
+            const tweets = await getTweetsFromDatePeriod(slug, startDate, endOfDay);
+            obj[startDate.toUTCString()] = tweets;
+            startDate = new Date(startDate.valueOf() + msInDay);
+        } catch (err) {
+            res.status(500).send(err);
+            return;
+        }
+    }
+    res.send(obj);
+});
+
+async function getTweetsFromDatePeriod(slug, startDate, endDate) {
+    return new Promise((res, rej) => {
+        mysqlConnection.query(`
+        SELECT C.* FROM opensea_top100 as A, tw_user as B, tw_tweet as C
+        WHERE A.twitter_username = B.username
+        AND B.user_id = C.author_id
+        AND A.slug = ?
+        AND C.created BETWEEN ? AND ?;
+        `, [slug, startDate, endDate], (err, results) => {
+            if (err) rej(err);
+            res(results);
+        });
     });
-})
+}
 
 app.listen(process.env.PORT);
