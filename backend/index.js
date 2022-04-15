@@ -15,34 +15,30 @@ app.get('/all-collections-info', (req, res) => {
     const info = mysqlConnection.query(`SELECT *
     FROM opensea_top100
     LEFT OUTER JOIN tw_user
-    ON opensea_top100.twitter_username = tw_user.username;`);
-    console.log('info :', info);
+    ON opensea_top100.twitter_username = tw_user.username;`, (err, results) => {
+        if (err) res.status(500).send(err);
+        res.send(results);
+    });
 });
 
 app.get('/tweets/:slug', (req, res) => {
     const slug = req.params.slug;
     const body = req.body;
     if (!body || !body.startDate || !body.endDate) {
-        res.statusCode(400).send("Missing startDate / endDate in req body");
+        res.status(400).send("Missing startDate / endDate in req body");
     }
     const startDate = new Date(body.startDate);
     const endDate = new Date(body.endDate);
-    const tweetsInDateRange = mysqlConnection.query(`SELECT *
-    FROM tweets
-    WHERE 
-        username in (
-            SELECT twitter_username FROM opensea_top100
-            WHERE 
-                opensea_top100.slug = ?
-            LIMIT 1
-        ) AND created_at BETWEEN ? AND ?
-        date_created
-    `, [slug, startDate, endDate]);
-    const nftSalesInDateRange = mysqlConnection.query(`
-        SELECT slug, twitter_username, one_day_sales, one_day_average_price FROM 
-        
-    `)
-    
+    mysqlConnection.query(`
+    SELECT C.* FROM opensea_top100 as A, tw_user as B, tw_tweet as C
+    WHERE A.twitter_username = B.username
+    AND B.user_id = C.author_id
+    AND A.slug = ?
+    AND C.created BETWEEN ? AND ?;
+    `, [slug, startDate, endDate], (err, results) => {
+        if (err) res.status(500).send(err);
+        res.send(results);
+    });
 })
 
 app.listen(process.env.PORT);
