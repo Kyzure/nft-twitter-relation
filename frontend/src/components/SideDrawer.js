@@ -57,11 +57,12 @@ function SideDrawer(props) {
 
   const nftOptions = ["OpenSea", "LooksRare", "Rarible"];
   const inputRef = React.useRef(null);
-  const baseURL = "http://localhost:5000/"
+  const baseURL = "http://139.99.72.60:4000/tweets/cryptopunks"
 
   const [id, setId] = React.useState(1)
 
   function GetData(name, marketplace) {
+    /*
     axios.get(baseURL, { params: { "name": name, "marketplace": marketplace } })
       .then((response) => {
         let data = response.data
@@ -73,6 +74,11 @@ function SideDrawer(props) {
           }
           return [...old, data]
         });
+    });
+    */
+    axios.get("http://139.99.72.60:4000/all-collections-info")
+      .then((response) => {
+        console.log(response.data)
     });
   }
 
