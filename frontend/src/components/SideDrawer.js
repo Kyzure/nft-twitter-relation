@@ -61,6 +61,7 @@ function SideDrawer(props) {
 
   const [id, setId] = React.useState(1)
 
+  // Get Data from backend here
   function GetData(name, marketplace) {
     /*
     axios.get(baseURL, { params: { "name": name, "marketplace": marketplace } })
@@ -78,7 +79,7 @@ function SideDrawer(props) {
     */
     axios.get("http://139.99.72.60:4000/all-collections-info")
       .then((response) => {
-        console.log(response.data)
+        console.log(response)
     });
   }
 
