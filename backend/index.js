@@ -51,11 +51,15 @@ app.get('/tweets/:slug', async (req, res) => {
 async function getTweetsFromDatePeriod(slug, startDate, endDate) {
     return new Promise((res, rej) => {
         mysqlConnection.query(`
-        SELECT C.* FROM opensea_top100 as A, tw_user as B, tw_tweet as C
+        SELECT A.slug, A.twitter_username,
+        B.user_id, B.followers_count,
+        C.tweet_id, C.author_id, C.query, C.retweet_count, C.reply_count, C.like_count, C.created
+        FROM opensea_top100 as A, tw_user as B, tw_tweet as C
         WHERE A.twitter_username = B.username
-        AND B.user_id = C.author_id
-        AND A.slug = ?
-        AND C.created BETWEEN ? AND ?;
+            AND B.user_id = C.author_id
+            AND A.slug = ?
+            AND C.created BETWEEN ? AND ?
+        ORDER BY A.id DESC;
         `, [slug, startDate, endDate], (err, results) => {
             if (err) rej(err);
             res(results);
