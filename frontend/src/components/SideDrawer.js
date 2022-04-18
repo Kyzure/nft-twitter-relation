@@ -1,6 +1,7 @@
 import * as React from 'react';
 import DropdownSelect from './DropdownSelect.js';
 import axios from "axios";
+import qs from "qs";
 
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
@@ -12,6 +13,7 @@ import Toolbar from '@mui/material/Toolbar';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
+import Button from '@mui/material/Button';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { styled } from '@mui/material/styles';
 
@@ -83,18 +85,20 @@ function SideDrawer(props) {
     */
     // http://139.99.72.60:4000/tweets/cryptopunks
     // http://139.99.72.60:4000/all-collections-info
-   axios({
-    method: "GET",
-    url: "http://139.99.72.60:4000/tweets/cryptopunks",
-    body: {
-      "startDate": "Apr 8 2022 00:00:00 UTC",
-      "endDate": "Apr 15 2022 00:00:00 UTC"
+    let options = {
+      method: "GET",
+      url: "http://139.99.72.60:4000/",
+      headers: { 'Content-Type': 'application/json' },
+      params: JSON.stringify({
+        "test": "yeet"
+      })
     }
-  })
-    .then((response) => {
-      console.log(response)
-    });
-  }
+
+    axios(options)
+      .then((response) => {
+        console.log(response)
+      });
+    }
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -166,6 +170,9 @@ function SideDrawer(props) {
                   value={ props.collection }
                 />
               </Stack>
+              <Button color="secondary" onClick={ GetData }>
+                Testing
+              </Button>
 
             </Stack>
           </Box>
