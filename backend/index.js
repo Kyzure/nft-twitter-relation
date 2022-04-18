@@ -27,10 +27,12 @@ app.get('/all-collections-info', (req, res) => {
     const endDate = new Date(startDate.valueOf() + msInDay);
     const sd = convertDateTime(startDate);
     const ed = convertDateTime(endDate);
-    mysqlConnection.query(`SELECT opensea_top100.name, opensea_top100.average_price, tw_user.followers_count
+    mysqlConnection.query(`
+    SELECT DISTINCT opensea_top100.name, opensea_top100.average_price, opensea_top100.floor_price, tw_user.followers_count
     FROM opensea_top100, tw_user
     WHERE opensea_top100.twitter_username = tw_user.username
-    AND opensea_top100.created between ? and ?`, [sd, ed], (err, results) => {
+    AND opensea_top100.created between ? and ?
+    AND tw_user.created between ? and ?`, [sd, ed], (err, results) => {
         if (err) res.status(500).send(err);
         res.send(results);
     });

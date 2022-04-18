@@ -96,13 +96,12 @@ function SideDrawer(props) {
       url: "http://139.99.72.60:4000/all-collections-info",
       headers: { 'Content-Type': 'application/json' },
       params: {
-        "date": "Apr 16 2022 00:00:00 UTC"
+        "date": "Apr 18 2022 00:00:00 UTC"
       }
     }
 
     axios(options)
       .then((response) => {
-        console.log("Yeet")
         console.log(response)
       });
     }
