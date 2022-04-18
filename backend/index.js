@@ -83,7 +83,7 @@ async function getTweetInfoOneDate(name, date) {
             WITH X AS (
             SELECT DISTINCT twitter_username, one_day_sales, one_day_average_price
             FROM opensea_top100
-            WHERE name = '${name}' AND created BETWEEN ${sd} AND ${ed}'
+            WHERE name = '${name}' AND created BETWEEN ${sd} AND ${ed}
             ),
             Y AS (
             SELECT user_id, twitter_username, one_day_sales, one_day_average_price
