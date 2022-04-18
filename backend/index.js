@@ -5,7 +5,7 @@ const mysqlConnection = require("./db/mysql");
 
 const app = express();
 const cors = require('cors');
-const convertDateTime = (date) => { return date.toISOString().slice(0, 19).replace('T', ' ').replace('-', '/').replace('-', '/') };
+const convertDateTime = (date) => { return "'" + date.toISOString().slice(0, 19).replace('T', ' ').replace('-', '/').replace('-', '/') + "'"};
 
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -27,7 +27,8 @@ app.get('/all-collections-info', (req, res) => {
     const endDate = new Date(startDate.valueOf() + msInDay);
     const sd = convertDateTime(startDate);
     const ed = convertDateTime(endDate);
-    mysqlConnection.query(`SELECT * FROM opensea_top100, tw_user
+    mysqlConnection.query(`SELECT opensea_top100.name, opensea_top100.average_price, tw_user.followers
+    FROM opensea_top100, tw_user
     WHERE opensea_top100.twitter_username = tw_user.username
     AND opensea_top100.created between ? and ?`, [sd, ed], (err, results) => {
         if (err) res.status(500).send(err);

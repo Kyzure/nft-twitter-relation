@@ -88,7 +88,7 @@ function SideDrawer(props) {
     const startDate = new Date(new Date("Apr 5 2022 00:00:00 UTC").setUTCHours(0, 0, 0, 0))
     const msInDay = 1000 * 60 * 60 * 24;
     const endDate = new Date(startDate.valueOf() + msInDay);
-    const convertDateTime = (date) => { return date.toISOString().slice(0, 19).replace('T', ' ').replace('-', '/').replace('-', '/') };
+    const convertDateTime = (date) => { return "'" + date.toISOString().slice(0, 19).replace('T', ' ').replace('-', '/').replace('-', '/') + "'"};
     console.log(convertDateTime(startDate))
     console.log(convertDateTime(endDate))
     let options = {
@@ -96,12 +96,13 @@ function SideDrawer(props) {
       url: "http://139.99.72.60:4000/all-collections-info",
       headers: { 'Content-Type': 'application/json' },
       params: {
-        "date": "Apr 8 2022 00:00:00 UTC"
+        "date": "Apr 16 2022 00:00:00 UTC"
       }
     }
 
     axios(options)
       .then((response) => {
+        console.log("Yeet")
         console.log(response)
       });
     }
