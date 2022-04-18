@@ -1,20 +1,28 @@
 import * as React from 'react';
-import DropdownSelect from './DropdownSelect.js';
 import axios from "axios";
 
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
-import Toolbar from '@mui/material/Toolbar';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
+import FormControl from '@mui/material/FormControl';
 import IconButton from '@mui/material/IconButton';
-import Button from '@mui/material/Button';
-import GitHubIcon from '@mui/icons-material/GitHub';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem'
+import Select from '@mui/material/Select';
+import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
+import TextField from '@mui/material/TextField';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+
+import GitHubIcon from '@mui/icons-material/GitHub';
+
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 const TextFieldStyled = styled(TextField)(({ theme }) => ({
   '& label.Mui-focused': {
@@ -36,12 +44,6 @@ const TextFieldStyled = styled(TextField)(({ theme }) => ({
   },
 }));
 
-const IconButtonStyled = styled(IconButton)(({ theme }) => ({
-  "&:hover, &.Mui-focusVisible": {
-    backgroundColor: theme.palette.secondary
-  }
-}));
-
 function SideDrawer(props) {  
   const DrawerStyled = styled(Drawer)(({ theme }) => ({
     '& .MuiDrawer-paper': {
@@ -51,25 +53,107 @@ function SideDrawer(props) {
     }
   }));
 
-  const selectMarketplace = (event) => {
-    props.setMarketplace(event.target.value);
-    props.setCollection([]);
-  };
-
-  const selectCollection = (event, newValue) => {
-    props.setCollection([...newValue]);
-  };
-
-  const marketplaceOptions = ["OpenSea", "LooksRare", "Rarible"];
   const [collectionOptions, setCollectionOptions] = React.useState([]);
+
+  const [collection, setCollection] = React.useState([]);
+  const [startDate, setStartDate] = React.useState(null);
+  const [endDate, setEndDate] = React.useState(null);
+  const [yAxis, setYAxis] = React.useState('follower_count');
+  const [y1Axis, setY1Axis] = React.useState('floor_price');
+
+  const selectCollection = (_event, newValue) => {
+    setCollection([...newValue]);
+  };
+
+  function SelectDate () {
+    if (collection.length === 1) {
+      return (
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <DatePicker
+            label="Start Date"
+            value={startDate}
+            onChange={(newValue) => {
+              setStartDate(newValue);
+            }}
+            renderInput={(params) => <TextField {...params} />}
+            inputFormat="dd/MM/yyyy"
+          />
+          <DatePicker
+            label="End Date"
+            value={endDate}
+            onChange={(newValue) => {
+              setEndDate(newValue);
+            }}
+            renderInput={(params) => <TextField {...params} />}
+            inputFormat="dd/MM/yyyy"
+          />
+        </LocalizationProvider>
+      );
+    }
+    if (collection.length > 1) {
+      return (
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <DatePicker
+            label="Select Date"
+            value={startDate}
+            onChange={(newValue) => {
+              setStartDate(newValue);
+            }}
+            renderInput={(params) => <TextField {...params} />}
+            inputFormat="dd/MM/yyyy"
+          />
+        </LocalizationProvider>
+      );
+    }
+  }
+
+  function SelectAxis () {
+    if (collection.length > 0) {
+      return (
+        <>
+          <FormControl>
+            <InputLabel id="yAxisLabel">Select Y-Axis</InputLabel>
+            <Select
+                labelId="yAxisLabel"
+                id="Y-Axis"
+                value={yAxis}
+                label="Y-Axis"
+                onChange={(event) => {
+                  setYAxis(event.target.value);
+                }}
+              >
+                <MenuItem value={"average_price"}>average_price</MenuItem>
+                <MenuItem value={"floor_price"}>floor_price</MenuItem>
+                <MenuItem value={"follower_count"}>follower_count</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl>
+            <InputLabel id="y1AxisLabel">Select Y1-Axis</InputLabel>
+            <Select
+              labelId="y1AxisLabel"
+              id="Y1-Axis"
+              value={y1Axis}
+              label="Y1-Axis"
+              onChange={(event) => {
+                setY1Axis(event.target.value);
+              }}
+            >
+                <MenuItem value={"average_price"}>average_price</MenuItem>
+                <MenuItem value={"floor_price"}>floor_price</MenuItem>
+                <MenuItem value={"follower_count"}>follower_count</MenuItem>
+            </Select>
+          </FormControl>
+        </>
+      )
+    }
+  }
 
   function GetAllCollectionInfo(date) {
     const path = "all-collections-info"
     const query = {
       "date": date 
     }
-    console.log(collectionOptions)
-    // GetAxiosData(path, query)
+    GetAxiosData(path, query)
   }
 
   // Try to make this 7 days or so for graph to look nice
@@ -93,10 +177,24 @@ function SideDrawer(props) {
       url: "http://139.99.72.60:4000/" + path,
       headers: { 'Content-Type': 'application/json' },
       params: query
-    })
-      .then((res) => { props.setData(res.data) });
+    }).then((res) => {
+      var filtered = res.data.filter(x => collection.includes(x.name) === true);
+      console.log(filtered);
+      var data = {
+        xData: [],
+        yData: [],
+        yLabel: yAxis,
+        y1Data:[],
+        y1Label: y1Axis
+      };
+      filtered.forEach(f => {
+        data.xData.push(f.name);
+        data.yData.push(f[yAxis]);
+        data.y1Data.push(f[y1Axis]);
+      });
+      props.setData(data);
+    });
   }
-
 
   React.useEffect(() => {
     let isMounted = true;
@@ -143,24 +241,6 @@ function SideDrawer(props) {
                 spacing="20px"
                 sx={{ width: "100%" }}>
                 <Typography color="text.main" variant="h6">
-                  Select NFT marketplace
-                </Typography>
-                <DropdownSelect
-                  sx={{ width: "100%", padding: "0 0 0 0" }}
-                  value={ props.marketplace }
-                  label="NFT Marketplace"
-                  selectOption={ selectMarketplace }
-                  options={ marketplaceOptions } />
-              </Stack>
-
-              <Divider sx={{ width:'85%' }} />
-
-              <Stack
-                alignItems="left"
-                direction="column"
-                spacing="20px"
-                sx={{ width: "100%" }}>
-                <Typography color="text.main" variant="h6">
                   Select NFT collection
                 </Typography>
                 <Autocomplete
@@ -169,21 +249,25 @@ function SideDrawer(props) {
                   onChange={ selectCollection }
                   options={ collectionOptions }
                   getOptionLabel={(option) => option}
-                  defaultValue={ collectionOptions.length === 0 ? [] : [collectionOptions[0]] }
+                  defaultValue={ [] }
                   renderInput={(params) => (
                     <TextFieldStyled
                       {...params}
                       variant="outlined"
-                      label={"Collections from " + props.marketplace}
+                      label={"OpenSea Collections"}
                     />
                   )}
-                  value={ props.collection }
+                  value={ collection }
                 />
               </Stack>
+
+              { SelectDate() }
+              { SelectAxis() }
+
               <Button color="secondary" onClick={ () => GetAllCollectionInfo("Apr 15 2022 00:00:00 UTC") }>
                 Example Button
               </Button>
-
+              
             </Stack>
           </Box>
         </DrawerStyled>
