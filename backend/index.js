@@ -31,8 +31,8 @@ app.get('/all-collections-info', (req, res) => {
     SELECT DISTINCT opensea_top100.name, opensea_top100.average_price, opensea_top100.floor_price, tw_user.followers_count
     FROM opensea_top100, tw_user
     WHERE opensea_top100.twitter_username = tw_user.username
-    AND opensea_top100.created between ? and ?
-    AND tw_user.created between ? and ?`, [sd, ed, sd, ed], (err, results) => {
+    AND opensea_top100.created between ${sd} and ${ed}
+    AND tw_user.created between ${sd} and ${ed}`, (err, results) => {
         if (err) res.status(500).send(err);
         res.send(results);
     });
