@@ -63,11 +63,10 @@ function SideDrawer(props) {
   const marketplaceOptions = ["OpenSea", "LooksRare", "Rarible"];
   const collectionOptions = ["Ayy", "Bee", "Cee", "Dee", "Ee", "Eff", "Gee", "Aitch", "Aye", "Jay"]
   const inputRef = React.useRef(null);
-  const baseURL = "http://139.99.72.60:4000/tweets/cryptopunks"
 
   const [id, setId] = React.useState(1)
 
-  function GetData(name, marketplace) {
+  function GetAxiosData() {
     /*
     axios.get(baseURL, { params: { "name": name, "marketplace": marketplace } })
       .then((response) => {
@@ -84,12 +83,14 @@ function SideDrawer(props) {
     */
     // http://139.99.72.60:4000/tweets/cryptopunks
     // http://139.99.72.60:4000/all-collections-info
+    // let date = new Date(new Date("Apr 8 2022 00:00:00 UTC").setUTCHours(0, 0, 0, 0))
+    // console.log(date)
     let options = {
       method: "GET",
-      url: "http://139.99.72.60:4000/",
+      url: "http://139.99.72.60:4000/all-collections-info",
       headers: { 'Content-Type': 'application/json' },
       params: {
-        "test": "yeet"
+        "date": "Apr 8 2022 00:00:00 UTC"
       }
     }
 
@@ -169,7 +170,7 @@ function SideDrawer(props) {
                   value={ props.collection }
                 />
               </Stack>
-              <Button color="secondary" onClick={ GetData }>
+              <Button color="secondary" onClick={ GetAxiosData }>
                 Testing
               </Button>
 

@@ -14,6 +14,10 @@ app.get('/', (req, res) => {
 });
 
 app.get('/all-collections-info', (req, res) => {
+    if (!req.query || !req.query.date) {
+        res.status(400).send("Missing date in params");
+        return;
+    }
     const startDate = !req.query || !req.query.date
         ? new Date(new Date().setUTCHours(0, 0, 0, 0))
         : new Date(new Date(req.query.date).setUTCHours(0, 0, 0, 0));
