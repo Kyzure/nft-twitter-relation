@@ -1,7 +1,6 @@
 import * as React from 'react';
 import DropdownSelect from './DropdownSelect.js';
 import axios from "axios";
-import qs from "qs";
 
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
@@ -89,9 +88,9 @@ function SideDrawer(props) {
       method: "GET",
       url: "http://139.99.72.60:4000/",
       headers: { 'Content-Type': 'application/json' },
-      params: JSON.stringify({
+      params: {
         "test": "yeet"
-      })
+      }
     }
 
     axios(options)

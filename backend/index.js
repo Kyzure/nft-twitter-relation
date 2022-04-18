@@ -14,9 +14,9 @@ app.get('/', (req, res) => {
 });
 
 app.get('/all-collections-info', (req, res) => {
-    const startDate = !req.body || !req.body.date
+    const startDate = !req.query || !req.query.date
         ? new Date(new Date().setUTCHours(0, 0, 0, 0))
-        : new Date(new Date(req.body.date).setUTCHours(0, 0, 0, 0));
+        : new Date(new Date(req.query.date).setUTCHours(0, 0, 0, 0));
     const msInDay = 1000 * 60 * 60 * 24;
     const endDate = new Date(startDate.valueOf() + msInDay);
     mysqlConnection.query(`SELECT *
@@ -30,7 +30,7 @@ app.get('/all-collections-info', (req, res) => {
 
 app.get('/tweets/:slug', async (req, res) => {
     const slug = req.params.slug;
-    const body = req.body;
+    const body = req.query;
     if (!body || !body.startDate || !body.endDate) {
         res.status(400).send("Missing startDate / endDate in req body");
         return;
