@@ -14,10 +14,15 @@ app.get('/', (req, res) => {
 });
 
 app.get('/all-collections-info', (req, res) => {
-    const info = mysqlConnection.query(`SELECT *
-    FROM opensea_top100
-    LEFT OUTER JOIN tw_user
-    ON opensea_top100.twitter_username = tw_user.username;`, (err, results) => {
+    const startDate = !req.body || !req.body.date
+        ? new Date(new Date().setUTCHours(0, 0, 0, 0))
+        : new Date(new Date(req.body.date).setUTCHours(0, 0, 0, 0));
+    const msInDay = 1000 * 60 * 60 * 24;
+    const endDate = new Date(startDate.valueOf() + msInDay);
+    mysqlConnection.query(`SELECT *
+    WHERE opensea_top100.twitter_username = tw_user.username
+    AND opensea_top100.created between ? and ?
+    AND tw_user.created between ? and ?;`, [startDate, endDate, startDate, endDate], (err, results) => {
         if (err) res.status(500).send(err);
         res.send(results);
     });
