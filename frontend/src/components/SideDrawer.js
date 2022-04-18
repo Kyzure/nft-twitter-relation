@@ -68,8 +68,7 @@ function SideDrawer(props) {
     const query = {
       "date": date 
     }
-    console.log(collectionOptions)
-    // GetAxiosData(path, query)
+    GetAxiosData(path, query)
   }
 
   // Try to make this 7 days or so for graph to look nice
@@ -79,14 +78,7 @@ function SideDrawer(props) {
       "startDate": startDate,
       "endDate": endDate
     }
-    console.log("get tweeet")
-    let date = new Date(new Date().setUTCHours(0, 0, 0, 0))
-    const year = date.getFullYear();
-    const monthStr = `${date.getMonth() + 1}`.padStart(2, "0");
-    const dayStr = `${date.getDate()}`.padStart(2, "0");
-    const dateSearchStr = `${year}-${monthStr}-${dayStr}T%`;
-    console.log(dateSearchStr);
-    // GetAxiosData(path, query)
+    GetAxiosData(path, query)
   }
 
   // Function to get data from backend.
@@ -193,7 +185,7 @@ function SideDrawer(props) {
               <Button color="secondary" onClick={ () => GetAllCollectionInfo("Apr 15 2022 00:00:00 UTC") }>
                 Example Button
               </Button>
-              <Button color="secondary" onClick={ () => GetTweetInfo("MoonCats", "Apr 11 2022 00:00:00 UTC", "Apr 17 2022 00:00:00 UTC") }>
+              <Button color="secondary" onClick={ () => GetTweetInfo("axie", "Apr 11 2022 00:00:00 UTC", "Apr 17 2022 00:00:00 UTC") }>
                 Example Button 2
               </Button>
 

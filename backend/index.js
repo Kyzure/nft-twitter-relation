@@ -58,7 +58,7 @@ app.get('/tweets/:slug', async (req, res) => {
     const obj = {};
     while (startDate <= endDate) {
         try {
-            const tweets = await getTweetsFromSingleDate(slug, startDate);
+            const tweets = await getTweetInfoOneDate(slug, startDate);
             obj[startDate.toUTCString()] = tweets;
             startDate = new Date(startDate.valueOf() + msInDay);
         } catch (err) {
@@ -68,6 +68,49 @@ app.get('/tweets/:slug', async (req, res) => {
     }
     res.send(obj);
 });
+
+async function getTweetInfoOneDate(slug, date) {
+    return new Promise((res, rej) => {
+        const year = date.getFullYear();
+        const monthStr = `${date.getMonth() + 1}`.padStart(2, "0");
+        const dayStr = `${date.getDate()}`.padStart(2, "0");
+        const dateSearchStr = `${year}-${monthStr}-${dayStr}%`;
+        const queryStr = `
+        WITH X AS (
+            SELECT DISTINCT twitter_username 
+            FROM opensea_top100 
+            WHERE slug = '${slug}'
+        ),
+        Y AS (
+            SELECT user_id, followers_count, twitter_username 
+            FROM tw_user JOIN X ON username = X.twitter_username
+            ORDER BY followers_count DESC
+            LIMIT 1
+        ),
+        Z AS (
+            SELECT tweet_id, author_id, SUM(retweet_count) as retweet_count, SUM(reply_count) as reply_count, SUM(like_count) as like_count, created_at
+            FROM tw_tweet
+            GROUP BY tweet_id, author_id, created_at
+        )
+
+        SELECT B.user_id, B.followers_count, C.tweet_id, C.author_id, SUM(C.retweet_count), SUM(C.reply_count), SUM(C.like_count)
+        FROM Y as B, Z as C
+            WHERE B.user_id = C.author_id
+            AND C.created_at LIKE '${dateSearchStr}'
+            AND (C.tweet_id, C.retweet_count) IN
+                (
+                    SELECT tweet_id, MAX(retweet_count) as retweet_count
+                    FROM tw_tweet
+                    GROUP BY tweet_id
+                )
+        ORDER BY C.tweet_id DESC;
+        `;
+        mysqlConnection.query(queryStr, (err, results) => {
+            if (err) rej(err);
+            res(results);
+        });
+    });
+}
 
 async function getTweetsFromSingleDate(slug, date) {
     return new Promise((res, rej) => {
