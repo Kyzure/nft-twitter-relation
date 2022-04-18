@@ -75,7 +75,7 @@ async function getTweetInfoOneDate(name, date) {
         const monthStr = `${date.getMonth() + 1}`.padStart(2, "0");
         const dayStr = `${date.getDate()}`.padStart(2, "0");
         const dateSearchStr = `${year}-${monthStr}-${dayStr}%`;
-        const actualDate = convertDateTime(date)
+        const sd = convertDateTime(date)
         const msInDay = 1000 * 60 * 60 * 24;
         const endDate = new Date(date.valueOf() + msInDay);
         const ed = convertDateTime(endDate);
@@ -83,12 +83,12 @@ async function getTweetInfoOneDate(name, date) {
             WITH X AS (
             SELECT DISTINCT twitter_username, one_day_sales, one_day_average_price
             FROM opensea_top100
-            WHERE name = '${name}' AND created BETWEEN '${startDate}' AND '${endDate}'
+            WHERE name = '${name}' AND created BETWEEN ${sd} AND ${ed}'
             ),
             Y AS (
             SELECT user_id, twitter_username, one_day_sales, one_day_average_price
             FROM tw_user JOIN X ON username = X.twitter_username
-            ORDER BY followers_count DESC, average_price DESC
+            ORDER BY followers_count DESC, one_day_average_price DESC
             LIMIT 1
             ),
             Z AS (
@@ -98,7 +98,7 @@ async function getTweetInfoOneDate(name, date) {
             GROUP BY author_id
             )
             
-            SELECT retweet_count, reply_count, like_count, one_day_sales, one_day_average_price, ${startDate}
+            SELECT retweet_count, reply_count, like_count, one_day_sales, one_day_average_price
             FROM Y, Z
             WHERE Y.user_id = Z.author_id;
         `;
