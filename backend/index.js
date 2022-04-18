@@ -81,7 +81,7 @@ async function getTweetInfoOneDate(name, date) {
         const ed = convertDateTime(endDate);
         const queryStr = `
             WITH X AS (
-            SELECT DISTINCT twitter_username, one_day_sales, one_day_average_price, 
+            SELECT DISTINCT twitter_username, one_day_sales, one_day_average_price
             FROM opensea_top100
             WHERE name = '${name}' AND created BETWEEN '${startDate}' AND '${endDate}'
             ),
