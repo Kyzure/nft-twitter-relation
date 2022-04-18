@@ -79,7 +79,7 @@ function SideDrawer(props) {
    // http://139.99.72.60:4000/all-collections-info
    axios({
     method: "GET",
-    url: "http://139.99.72.60:4000/"
+    url: "http://139.99.72.60:4000/all-collections-info"
   })
     .then((response) => {
       console.log(response)
