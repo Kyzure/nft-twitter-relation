@@ -36,8 +36,7 @@ app.get('/tweets/:slug', async (req, res) => {
     const obj = {};
     while (startDate <= endDate) {
         try {
-            const endOfDay = new Date(startDate.valueOf() + msInDay - 1);
-            const tweets = await getTweetsFromDatePeriod(slug, startDate, endOfDay);
+            const tweets = await getTweetsFromSingleDate(slug, startDate);
             obj[startDate.toUTCString()] = tweets;
             startDate = new Date(startDate.valueOf() + msInDay);
         } catch (err) {
@@ -48,15 +47,46 @@ app.get('/tweets/:slug', async (req, res) => {
     res.send(obj);
 });
 
-async function getTweetsFromDatePeriod(slug, startDate, endDate) {
+async function getTweetsFromSingleDate(slug, date) {
     return new Promise((res, rej) => {
-        mysqlConnection.query(`
-        SELECT C.* FROM opensea_top100 as A, tw_user as B, tw_tweet as C
-        WHERE A.twitter_username = B.username
-        AND B.user_id = C.author_id
-        AND A.slug = ?
-        AND C.created BETWEEN ? AND ?;
-        `, [slug, startDate, endDate], (err, results) => {
+        const year = date.getFullYear();
+        const monthStr = `${date.getMonth() + 1}`.padStart(2, "0");
+        const dayStr = `${date.getDate()}`.padStart(2, "0");
+        const dateSearchStr = `${year}-${monthStr}-${dayStr}T%`;
+        const queryStr = `
+        WITH X AS (
+            SELECT DISTINCT twitter_username 
+            FROM opensea_top100 
+            WHERE slug = ?
+        ),
+        Y AS (
+            SELECT user_id, followers_count, twitter_username 
+            FROM tw_user
+            JOIN X
+            ON username = X.twitter_username
+            ORDER BY followers_count DESC
+            LIMIT 1
+        ),
+        Z AS (
+            SELECT tweet_id, author_id, MAX(retweet_count) as retweet_count, MAX(reply_count) as reply_count, MAX(like_count) as like_count, created_at
+            FROM tw_tweet
+            GROUP BY tweet_id, author_id, created_at
+        )
+
+        SELECT B.user_id, B.followers_count,
+        C.tweet_id, C.author_id, C.retweet_count, C.reply_count, C.like_count, C.created_at
+        FROM Y as B, Z as C
+            WHERE B.user_id = C.author_id
+            AND C.created_at LIKE ?
+            AND (C.tweet_id, C.retweet_count) IN
+                (
+                    SELECT tweet_id, MAX(retweet_count) as retweet_count
+                    FROM tw_tweet
+                    GROUP BY tweet_id
+                )
+        ORDER BY C.tweet_id DESC;
+        `;
+        mysqlConnection.query(queryStr, [slug, dateSearchStr], (err, results) => {
             if (err) rej(err);
             res(results);
         });
