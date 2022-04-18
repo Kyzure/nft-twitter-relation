@@ -23,7 +23,7 @@ app.get('/all-collections-info', (req, res) => {
         : new Date(new Date(req.query.date).setUTCHours(0, 0, 0, 0));
     const msInDay = 1000 * 60 * 60 * 24;
     const endDate = new Date(startDate.valueOf() + msInDay);
-    mysqlConnection.query(`SELECT *
+    mysqlConnection.query(`SELECT * FROM opensea_top100, tw_user
     WHERE opensea_top100.twitter_username = tw_user.username
     AND opensea_top100.created between ? and ?
     AND tw_user.created between ? and ?;`, [startDate, endDate, startDate, endDate], (err, results) => {
