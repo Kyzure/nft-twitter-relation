@@ -96,7 +96,7 @@ function SideDrawer(props) {
       url: "http://139.99.72.60:4000/all-collections-info",
       headers: { 'Content-Type': 'application/json' },
       params: {
-        "date": "Apr 18 2022 00:00:00 UTC"
+        "date": "Apr 15 2022 00:00:00 UTC"
       }
     }
 

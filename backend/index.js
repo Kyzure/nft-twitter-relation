@@ -32,7 +32,7 @@ app.get('/all-collections-info', (req, res) => {
     FROM opensea_top100, tw_user
     WHERE opensea_top100.twitter_username = tw_user.username
     AND opensea_top100.created between ? and ?
-    AND tw_user.created between ? and ?`, [sd, ed], (err, results) => {
+    AND tw_user.created between ? and ?`, [sd, ed, sd, ed], (err, results) => {
         if (err) res.status(500).send(err);
         res.send(results);
     });
