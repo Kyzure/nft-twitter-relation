@@ -10,8 +10,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
-    console.log("Testing")
-    res.send('Hello World!');
+    res.send('Not Hello World!');
 });
 
 app.get('/all-collections-info', (req, res) => {

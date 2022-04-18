@@ -79,11 +79,7 @@ function SideDrawer(props) {
    // http://139.99.72.60:4000/all-collections-info
    axios({
     method: "GET",
-    url: "http://139.99.72.60:4000/tweets/cryptopunks",
-    body: {
-      "startDate": "Apr 8 2022 00:00:00 UTC",
-      "endDate": "Apr 15 2022 00:00:00 UTC"
-    }
+    url: "http://139.99.72.60:4000/"
   })
     .then((response) => {
       console.log(response)
