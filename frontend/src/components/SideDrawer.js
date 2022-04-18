@@ -76,9 +76,17 @@ function SideDrawer(props) {
         });
     });
     */
-    axios.get("http://139.99.72.60:4000/all-collections-info")
-      .then((response) => {
-        console.log(response.data)
+   // http://139.99.72.60:4000/all-collections-info
+   axios({
+    method: "GET",
+    url: "http://139.99.72.60:4000/tweets/cryptopunks",
+    body: {
+      "startDate": "Apr 8 2022 00:00:00 UTC",
+      "endDate": "Apr 15 2022 00:00:00 UTC"
+    }
+  })
+    .then((response) => {
+      console.log(response)
     });
   }
 
