@@ -267,7 +267,10 @@ function SideDrawer(props) {
               <Button color="secondary" onClick={ () => GetAllCollectionInfo("Apr 15 2022 00:00:00 UTC") }>
                 Example Button
               </Button>
-              
+              <Button color="secondary" onClick={ () => GetTweetInfo("axie", "Apr 11 2022 00:00:00 UTC", "Apr 17 2022 00:00:00 UTC") }>
+                Example Button 2
+              </Button>
+
             </Stack>
           </Box>
         </DrawerStyled>

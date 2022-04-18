@@ -58,7 +58,7 @@ app.get('/tweets/:slug', async (req, res) => {
     const obj = {};
     while (startDate <= endDate) {
         try {
-            const tweets = await getTweetsFromSingleDate(slug, startDate);
+            const tweets = await getTweetInfoOneDate(slug, startDate);
             obj[startDate.toUTCString()] = tweets;
             startDate = new Date(startDate.valueOf() + msInDay);
         } catch (err) {
@@ -69,17 +69,53 @@ app.get('/tweets/:slug', async (req, res) => {
     res.send(obj);
 });
 
+async function getTweetInfoOneDate(name, date) {
+    return new Promise((res, rej) => {
+        const year = date.getFullYear();
+        const monthStr = `${date.getMonth() + 1}`.padStart(2, "0");
+        const dayStr = `${date.getDate()}`.padStart(2, "0");
+        const dateSearchStr = `${year}-${monthStr}-${dayStr}%`;
+        const queryStr = `
+        WITH X AS (
+            SELECT DISTINCT twitter_username 
+            FROM opensea_top100 
+            WHERE name = '${name}'
+          ),
+          Y AS (
+            SELECT user_id, followers_count, twitter_username 
+            FROM tw_user JOIN X ON username = X.twitter_username
+            ORDER BY followers_count DESC
+            LIMIT 1
+          ),
+          Z AS (
+            SELECT author_id, SUM(retweet_count) as retweet_count, SUM(reply_count) as reply_count, SUM(like_count) as like_count
+            FROM tw_tweet
+            WHERE created_at LIKE '${dateSearchStr}'
+            GROUP BY author_id
+          )
+          
+          SELECT retweet_count, reply_count, like_count
+          FROM Y, Z
+          WHERE Y.user_id = Z.author_id;
+        `;
+        mysqlConnection.query(queryStr, (err, results) => {
+            if (err) rej(err);
+            res(results);
+        });
+    });
+}
+
 async function getTweetsFromSingleDate(slug, date) {
     return new Promise((res, rej) => {
         const year = date.getFullYear();
         const monthStr = `${date.getMonth() + 1}`.padStart(2, "0");
         const dayStr = `${date.getDate()}`.padStart(2, "0");
-        const dateSearchStr = `${year}-${monthStr}-${dayStr}T%`;
+        const dateSearchStr = `${year}-${monthStr}-${dayStr}%`;
         const queryStr = `
         WITH X AS (
             SELECT DISTINCT twitter_username 
             FROM opensea_top100 
-            WHERE slug = ?
+            WHERE slug = '${slug}'
         ),
         Y AS (
             SELECT user_id, followers_count, twitter_username 
@@ -99,7 +135,7 @@ async function getTweetsFromSingleDate(slug, date) {
         C.tweet_id, C.author_id, C.retweet_count, C.reply_count, C.like_count, C.created_at
         FROM Y as B, Z as C
             WHERE B.user_id = C.author_id
-            AND C.created_at LIKE ?
+            AND C.created_at LIKE '${dateSearchStr}'
             AND (C.tweet_id, C.retweet_count) IN
                 (
                     SELECT tweet_id, MAX(retweet_count) as retweet_count
@@ -108,7 +144,7 @@ async function getTweetsFromSingleDate(slug, date) {
                 )
         ORDER BY C.tweet_id DESC;
         `;
-        mysqlConnection.query(queryStr, [slug, dateSearchStr], (err, results) => {
+        mysqlConnection.query(queryStr, (err, results) => {
             if (err) rej(err);
             res(results);
         });
