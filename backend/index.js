@@ -75,28 +75,29 @@ async function getTweetInfoOneDate(name, date) {
         const monthStr = `${date.getMonth() + 1}`.padStart(2, "0");
         const dayStr = `${date.getDate()}`.padStart(2, "0");
         const dateSearchStr = `${year}-${monthStr}-${dayStr}%`;
+        const actualDate = convertDateTime(date)
         const queryStr = `
-        WITH X AS (
-            SELECT DISTINCT twitter_username 
-            FROM opensea_top100 
-            WHERE name = '${name}'
-          ),
-          Y AS (
-            SELECT user_id, followers_count, twitter_username 
+            WITH X AS (
+            SELECT DISTINCT twitter_username, average_price, floor_price
+            FROM opensea_top100
+            WHERE name = '${name}' AND created = ${actualDate}
+            ),
+            Y AS (
+            SELECT user_id, twitter_username, average_price, floor_price
             FROM tw_user JOIN X ON username = X.twitter_username
-            ORDER BY followers_count DESC
+            ORDER BY followers_count DESC, average_price DESC
             LIMIT 1
-          ),
-          Z AS (
+            ),
+            Z AS (
             SELECT author_id, SUM(retweet_count) as retweet_count, SUM(reply_count) as reply_count, SUM(like_count) as like_count
             FROM tw_tweet
             WHERE created_at LIKE '${dateSearchStr}'
             GROUP BY author_id
-          )
-          
-          SELECT retweet_count, reply_count, like_count
-          FROM Y, Z
-          WHERE Y.user_id = Z.author_id;
+            )
+            
+            SELECT retweet_count, reply_count, like_count, average_price, floor_price
+            FROM Y, Z
+            WHERE Y.user_id = Z.author_id;
         `;
         mysqlConnection.query(queryStr, (err, results) => {
             if (err) rej(err);
