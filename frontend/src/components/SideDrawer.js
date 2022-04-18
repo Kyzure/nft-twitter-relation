@@ -80,7 +80,13 @@ function SideDrawer(props) {
       "endDate": endDate
     }
     console.log("get tweeet")
-    GetAxiosData(path, query)
+    let date = new Date(new Date().setUTCHours(0, 0, 0, 0))
+    const year = date.getFullYear();
+    const monthStr = `${date.getMonth() + 1}`.padStart(2, "0");
+    const dayStr = `${date.getDate()}`.padStart(2, "0");
+    const dateSearchStr = `${year}-${monthStr}-${dayStr}T%`;
+    console.log(dateSearchStr);
+    // GetAxiosData(path, query)
   }
 
   // Function to get data from backend.

@@ -71,7 +71,10 @@ app.get('/tweets/:slug', async (req, res) => {
 
 async function getTweetsFromSingleDate(slug, date) {
     return new Promise((res, rej) => {
-        const dateSearchStr = convertDateTime(date);
+        const year = date.getFullYear();
+        const monthStr = `${date.getMonth() + 1}`.padStart(2, "0");
+        const dayStr = `${date.getDate()}`.padStart(2, "0");
+        const dateSearchStr = `${year}-${monthStr}-${dayStr}%`;
         const queryStr = `
         WITH X AS (
             SELECT DISTINCT twitter_username 
@@ -96,7 +99,7 @@ async function getTweetsFromSingleDate(slug, date) {
         C.tweet_id, C.author_id, C.retweet_count, C.reply_count, C.like_count, C.created_at
         FROM Y as B, Z as C
             WHERE B.user_id = C.author_id
-            AND C.created_at LIKE ${dateSearchStr}
+            AND C.created_at LIKE '${dateSearchStr}'
             AND (C.tweet_id, C.retweet_count) IN
                 (
                     SELECT tweet_id, MAX(retweet_count) as retweet_count
