@@ -74,7 +74,7 @@ async function getTweetsFromSingleDate(slug, date) {
         const year = date.getFullYear();
         const monthStr = `${date.getMonth() + 1}`.padStart(2, "0");
         const dayStr = `${date.getDate()}`.padStart(2, "0");
-        const dateSearchStr = `${year}-${monthStr}-${dayStr}T%`;
+        const dateSearchStr = `${year}/${monthStr}/${dayStr}T%`;
         const queryStr = `
         WITH X AS (
             SELECT DISTINCT twitter_username 

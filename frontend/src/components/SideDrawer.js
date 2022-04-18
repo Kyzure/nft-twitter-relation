@@ -79,6 +79,7 @@ function SideDrawer(props) {
       "startDate": startDate,
       "endDate": endDate
     }
+    console.log("get tweeet")
     GetAxiosData(path, query)
   }
 
@@ -94,7 +95,10 @@ function SideDrawer(props) {
       headers: { 'Content-Type': 'application/json' },
       params: query
     })
-      .then((res) => { props.setData(res.data) });
+      .then((res) => { 
+        console.log(res.data)
+        props.setData(res.data)
+      });
   }
 
 
@@ -182,6 +186,9 @@ function SideDrawer(props) {
               </Stack>
               <Button color="secondary" onClick={ () => GetAllCollectionInfo("Apr 15 2022 00:00:00 UTC") }>
                 Example Button
+              </Button>
+              <Button color="secondary" onClick={ () => GetTweetInfo("MoonCats", "Apr 11 2022 00:00:00 UTC", "Apr 17 2022 00:00:00 UTC") }>
+                Example Button 2
               </Button>
 
             </Stack>
