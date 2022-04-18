@@ -53,7 +53,7 @@ const theme = createTheme({
 function App() {
   const drawerWidth = 350
   const [marketplace, setMarketplace] = React.useState("OpenSea");
-  const [collection, setCollection] = React.useState(["Ayy"]);
+  const [collection, setCollection] = React.useState(["MoonCats"]);
   const [data, setData] = React.useState([]);
   
   return (

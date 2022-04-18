@@ -61,29 +61,54 @@ function SideDrawer(props) {
   };
 
   const marketplaceOptions = ["OpenSea", "LooksRare", "Rarible"];
-  const collectionOptions = ["Ayy", "Bee", "Cee", "Dee", "Ee", "Eff", "Gee", "Aitch", "Aye", "Jay"]
-  const inputRef = React.useRef(null);
+  const [collectionOptions, setCollectionOptions] = React.useState([]);
 
-  const [id, setId] = React.useState(1)
+  function GetAllCollectionInfo(date) {
+    const path = "all-collections-info"
+    const query = {
+      "date": date 
+    }
+    console.log(collectionOptions)
+    // GetAxiosData(path, query)
+  }
 
-  // Function to ge
-  function GetAxiosData() {
-    // http://139.99.72.60:4000/tweets/cryptopunks
+  // Try to make this 7 days or so for graph to look nice
+  function GetTweetInfo(nft, startDate, endDate) {
+    const path = "tweets/" + nft
+    const query = {
+      "startDate": startDate,
+      "endDate": endDate
+    }
+    GetAxiosData(path, query)
+  }
+
+  // Function to get data from backend.
+  // path is the additional string added onto the url to GET from the right URL
+  // query is an object stating the necessary requirements for the API
+  function GetAxiosData(path, query) {
+    // http://139.99.72.60:4000/tweets
     // http://139.99.72.60:4000/all-collections-info
-    let options = {
+    axios({
       method: "GET",
-      url: "http://139.99.72.60:4000/all-collections-info",
+      url: "http://139.99.72.60:4000/" + path,
       headers: { 'Content-Type': 'application/json' },
-      params: {
-        "date": "Apr 15 2022 00:00:00 UTC"
-      }
-    }
+      params: query
+    })
+      .then((res) => { props.setData(res.data) });
+  }
 
-    axios(options)
-      .then((response) => {
-        props.setData(response.data)
-      });
-    }
+
+  React.useEffect(() => {
+    let isMounted = true;
+    axios.get("http://139.99.72.60:4000/all-collections-names")
+      .then((res) => { 
+        let data = []
+        for (let i = 0; i < res.data.length; i++) {
+          data[i] = res.data[i].name
+        }
+        if (isMounted) setCollectionOptions(data) })
+      return () => { isMounted = false };
+  }, []);  
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -155,8 +180,8 @@ function SideDrawer(props) {
                   value={ props.collection }
                 />
               </Stack>
-              <Button color="secondary" onClick={ GetAxiosData }>
-                Testing
+              <Button color="secondary" onClick={ () => GetAllCollectionInfo("Apr 15 2022 00:00:00 UTC") }>
+                Example Button
               </Button>
 
             </Stack>
