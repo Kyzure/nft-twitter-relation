@@ -5,7 +5,7 @@ const mysqlConnection = require("./db/mysql");
 
 const app = express();
 const cors = require('cors');
-const convertDateTime = (date) => { return date.toISOString().slice(0, 19).replace('T', ' ') };
+const convertDateTime = (date) => { return date.toISOString().slice(0, 19).replace('T', ' ').replace('-', '/').replace('-', '/') };
 
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }));
