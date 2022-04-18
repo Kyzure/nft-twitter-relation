@@ -54,7 +54,7 @@ function App() {
   const drawerWidth = 350
   const [marketplace, setMarketplace] = React.useState("OpenSea");
   const [collection, setCollection] = React.useState(["Ayy"]);
-  const [dataList, setDataList] = React.useState([]);
+  const [data, setData] = React.useState([]);
   
   return (
     <ThemeProvider theme={theme}>
@@ -66,8 +66,8 @@ function App() {
           setMarketplace={ setMarketplace }
           collection = { collection }
           setCollection={ setCollection }
-          dataList={ dataList }
-          setDataList={ setDataList }
+          data={ data }
+          setData={ setData }
         />
         <Dashboard 
           drawerWidth={ drawerWidth }

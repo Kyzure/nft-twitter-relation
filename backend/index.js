@@ -15,6 +15,13 @@ app.get('/', (req, res) => {
     res.send(req.query.test);
 });
 
+app.get('/all-collections-names', (req, res) => {
+    mysqlConnection.query(`SELECT DISTINCT name FROM opensea_top100`, (err, results) => {
+        if (err) res.status(500).send(err);
+        res.send(results);
+    })
+})
+
 app.get('/all-collections-info', (req, res) => {
     if (!req.query || !req.query.date) {
         res.status(400).send("Missing date in params");

@@ -66,31 +66,10 @@ function SideDrawer(props) {
 
   const [id, setId] = React.useState(1)
 
+  // Function to ge
   function GetAxiosData() {
-    /*
-    axios.get(baseURL, { params: { "name": name, "marketplace": marketplace } })
-      .then((response) => {
-        let data = response.data
-        data.id = id
-        setId(id + 1)
-        props.setDataList(old => {
-          if (old.length >= 5) {
-            return [...old.splice(1, 5), data]
-          }
-          return [...old, data]
-        });
-    });
-    */
     // http://139.99.72.60:4000/tweets/cryptopunks
     // http://139.99.72.60:4000/all-collections-info
-    // let date = new Date(new Date("Apr 8 2022 00:00:00 UTC").setUTCHours(0, 0, 0, 0))
-    // console.log(date)
-    const startDate = new Date(new Date("Apr 5 2022 00:00:00 UTC").setUTCHours(0, 0, 0, 0))
-    const msInDay = 1000 * 60 * 60 * 24;
-    const endDate = new Date(startDate.valueOf() + msInDay);
-    const convertDateTime = (date) => { return "'" + date.toISOString().slice(0, 19).replace('T', ' ').replace('-', '/').replace('-', '/') + "'"};
-    console.log(convertDateTime(startDate))
-    console.log(convertDateTime(endDate))
     let options = {
       method: "GET",
       url: "http://139.99.72.60:4000/all-collections-info",
@@ -102,7 +81,7 @@ function SideDrawer(props) {
 
     axios(options)
       .then((response) => {
-        console.log(response)
+        props.setData(response.data)
       });
     }
 
