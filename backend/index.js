@@ -76,7 +76,7 @@ async function getTweetsFromSingleDate(slug, date) {
         WITH X AS (
             SELECT DISTINCT twitter_username 
             FROM opensea_top100 
-            WHERE slug = ${slug}
+            WHERE slug = '${slug}'
         ),
         Y AS (
             SELECT user_id, followers_count, twitter_username 
