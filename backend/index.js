@@ -36,7 +36,7 @@ app.get('/all-collections-info', (req, res) => {
     const ed = convertDateTime(endDate);
     mysqlConnection.query(`
     WITH opensea_latest AS (
-        SELECT name, MAX(created)
+        SELECT name, average_price, floor_price, total_volume, total_sales, total_supply, count, num_owners, market_cap, MAX(created)
         FROM opensea_top100
         WHERE created between ${sd} AND ${ed} AND twitter_username IS NOT NULL
         GROUP BY name
