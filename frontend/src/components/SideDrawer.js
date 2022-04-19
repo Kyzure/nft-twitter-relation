@@ -202,13 +202,13 @@ function SideDrawer(props) {
   function ShowGraph() {
     if (collection.length === 1) {
       return (
-        <Button color="secondary" onClick={ () => GetTweetInfo(collection[0], "Apr 1 2022 00:00:00 UTC", "Apr 18 2022 00:00:00 UTC") }>
+        <Button color="secondary" onClick={ () => GetTweetInfo(collection[0], startDate, endDate) }>
           Show Tweets
         </Button>
       );
     } else if (collection.length > 1) {
       return (
-        <Button color="secondary" onClick={ () => GetAllCollectionInfo("Apr 15 2022 00:00:00 UTC") }>
+        <Button color="secondary" onClick={ () => GetAllCollectionInfo("Apr 16 2022 00:00:00 UTC") }>
           Show Collection Info
         </Button>
       )
