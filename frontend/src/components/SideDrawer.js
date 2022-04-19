@@ -58,10 +58,20 @@ function SideDrawer(props) {
   const [collection, setCollection] = React.useState([]);
   const [startDate, setStartDate] = React.useState(null);
   const [endDate, setEndDate] = React.useState(null);
-  const [yAxis, setYAxis] = React.useState('follower_count');
-  const [y1Axis, setY1Axis] = React.useState('floor_price');
+  const [yAxis, setYAxis] = React.useState('');
+  const [y1Axis, setY1Axis] = React.useState('');
 
   const selectCollection = (_event, newValue) => {
+    if (newValue.length === 0) {
+      setYAxis('');
+      setY1Axis('');
+    } else if (newValue.length === 1) {
+      setYAxis('like_count');
+      setY1Axis('one_day_average_price');
+    } else {
+      setYAxis('average_price');
+      setY1Axis('floor_price');
+    }
     setCollection([...newValue]);
   };
 
@@ -108,7 +118,48 @@ function SideDrawer(props) {
   }
 
   function SelectAxis () {
-    if (collection.length > 0) {
+    if (collection.length === 1) {
+      return (
+        <>
+          <FormControl>
+            <InputLabel id="yAxisLabel">Select Y-Axis</InputLabel>
+            <Select
+                labelId="yAxisLabel"
+                id="Y-Axis"
+                value={yAxis}
+                label="Y-Axis"
+                onChange={(event) => {
+                  setYAxis(event.target.value);
+                }}
+              >
+                <MenuItem value={"retweet_count"}>retweet_count</MenuItem>
+                <MenuItem value={"reply_count"}>reply_count</MenuItem>
+                <MenuItem value={"like_count"}>like_count</MenuItem>
+                <MenuItem value={"one_day_sales"}>one_day_sales</MenuItem>
+                <MenuItem value={"one_day_average_price"}>one_day_average_price</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl>
+            <InputLabel id="y1AxisLabel">Select Y1-Axis</InputLabel>
+            <Select
+              labelId="y1AxisLabel"
+              id="Y1-Axis"
+              value={y1Axis}
+              label="Y1-Axis"
+              onChange={(event) => {
+                setY1Axis(event.target.value);
+              }}
+            >
+                <MenuItem value={"retweet_count"}>retweet_count</MenuItem>
+                <MenuItem value={"reply_count"}>reply_count</MenuItem>
+                <MenuItem value={"like_count"}>like_count</MenuItem>
+                <MenuItem value={"one_day_sales"}>one_day_sales</MenuItem>
+                <MenuItem value={"one_day_average_price"}>one_day_average_price</MenuItem>
+            </Select>
+          </FormControl>
+        </>
+      )
+    } else if (collection.length > 1) {
       return (
         <>
           <FormControl>
@@ -148,6 +199,22 @@ function SideDrawer(props) {
     }
   }
 
+  function ShowGraph() {
+    if (collection.length === 1) {
+      return (
+        <Button color="secondary" onClick={ () => GetTweetInfo(collection[0], "Apr 1 2022 00:00:00 UTC", "Apr 18 2022 00:00:00 UTC") }>
+          Show Tweets
+        </Button>
+      );
+    } else if (collection.length > 1) {
+      return (
+        <Button color="secondary" onClick={ () => GetAllCollectionInfo("Apr 15 2022 00:00:00 UTC") }>
+          Show Collection Info
+        </Button>
+      )
+    }
+  }
+
   function GetAllCollectionInfo(date) {
     const path = "all-collections-info"
     const query = {
@@ -178,21 +245,33 @@ function SideDrawer(props) {
       headers: { 'Content-Type': 'application/json' },
       params: query
     }).then((res) => {
-      var filtered = res.data.filter(x => collection.includes(x.name) === true);
-      console.log(filtered);
       var data = {
         xData: [],
         yData: [],
         yLabel: yAxis,
         y1Data:[],
         y1Label: y1Axis
-      };
-      filtered.forEach(f => {
-        data.xData.push(f.name);
-        data.yData.push(f[yAxis]);
-        data.y1Data.push(f[y1Axis]);
-      });
-      props.setData(data);
+      }
+      console.log(res.data);
+      if (collection.length === 1) {
+        for (var key in res.data) {
+          if (res.data[key].length > 0) {
+            console.log(res.data[key][0]["one_day_sales"]);
+            data.xData.push(key);
+            data.yData.push(res.data[key][0][yAxis]);
+            data.y1Data.push(res.data[key][0][y1Axis]);
+          }
+        }
+        props.setData(data);
+      } else if (collection.length > 1) {
+        var filtered = res.data.filter(x => collection.includes(x.name) === true);
+        filtered.forEach(f => {
+          data.xData.push(f.name);
+          data.yData.push(f[yAxis]);
+          data.y1Data.push(f[y1Axis]);
+        });
+        props.setData(data);
+      }
     });
   }
 
@@ -263,13 +342,7 @@ function SideDrawer(props) {
 
               { SelectDate() }
               { SelectAxis() }
-
-              <Button color="secondary" onClick={ () => GetAllCollectionInfo("Apr 15 2022 00:00:00 UTC") }>
-                Example Button
-              </Button>
-              <Button color="secondary" onClick={ () => GetTweetInfo("axie", "Apr 11 2022 00:00:00 UTC", "Apr 17 2022 00:00:00 UTC") }>
-                Example Button 2
-              </Button>
+              { ShowGraph() }
 
             </Stack>
           </Box>
