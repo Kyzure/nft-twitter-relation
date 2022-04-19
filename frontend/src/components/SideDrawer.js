@@ -208,7 +208,7 @@ function SideDrawer(props) {
       );
     } else if (collection.length > 1) {
       return (
-        <Button color="secondary" onClick={ () => GetAllCollectionInfo("Apr 16 2022 00:00:00 UTC") }>
+        <Button color="secondary" onClick={ () => GetAllCollectionInfo(startDate) }>
           Show Collection Info
         </Button>
       )
@@ -252,7 +252,7 @@ function SideDrawer(props) {
         y1Data:[],
         y1Label: y1Axis
       }
-      console.log(res.data);
+      console.log(res.data)
       if (collection.length === 1) {
         for (var key in res.data) {
           if (res.data[key].length > 0) {
