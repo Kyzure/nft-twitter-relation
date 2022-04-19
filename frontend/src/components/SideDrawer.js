@@ -81,12 +81,35 @@ function SideDrawer(props) {
   }));
 
   const [collectionOptions, setCollectionOptions] = React.useState([]);
+  const [collectOptWithTwit, setCollectOptWithTwit] = React.useState([]);
 
   const [collection, setCollection] = React.useState([]);
-  const [startDate, setStartDate] = React.useState(null);
-  const [endDate, setEndDate] = React.useState(null);
+  const [startDate, setStartDate] = React.useState(
+    new Date("April 15, 2022 00:00:00")
+  );
+  const [endDate, setEndDate] = React.useState(new Date());
   const [yAxis, setYAxis] = React.useState("");
   const [y1Axis, setY1Axis] = React.useState("");
+
+  const multiNFTAxisOptions = [
+    "average_price",
+    "count",
+    "floor_price",
+    "followers_count",
+    "market_cap",
+    "num_owners",
+    "reply_count",
+    "retweet_count",
+    "total_sales",
+    "total_supply",
+    "total_volume",
+    "tweet_count",
+  ];
+  const multiNFTAxisMenuItems = multiNFTAxisOptions.map((option) => (
+    <MenuItem key={option} value={option}>
+      {option}
+    </MenuItem>
+  ));
 
   const selectCollection = (_event, newValue) => {
     if (newValue.length === 0) {
@@ -96,8 +119,8 @@ function SideDrawer(props) {
       setYAxis("like_count");
       setY1Axis("one_day_average_price");
     } else {
-      setYAxis("average_price");
-      setY1Axis("floor_price");
+      setYAxis(multiNFTAxisOptions[0]);
+      setY1Axis(multiNFTAxisOptions[1]);
     }
     setCollection([...newValue]);
   };
@@ -115,6 +138,7 @@ function SideDrawer(props) {
               }}
               renderInput={(params) => <TextField {...params} />}
               inputFormat="dd/MM/yyyy"
+              minDate={new Date("April 1, 2022 00:00:00")}
             />
             <DatePicker
               label="End Date"
@@ -124,6 +148,7 @@ function SideDrawer(props) {
               }}
               renderInput={(params) => <TextField {...params} />}
               inputFormat="dd/MM/yyyy"
+              maxDate={new Date()}
             />
           </ThemeProvider>
         </LocalizationProvider>
@@ -141,6 +166,8 @@ function SideDrawer(props) {
               }}
               renderInput={(params) => <TextField {...params} />}
               inputFormat="dd/MM/yyyy"
+              minDate={new Date("April 15, 2022 00:00:00")}
+              maxDate={new Date()}
             />
           </ThemeProvider>
         </LocalizationProvider>
@@ -208,9 +235,7 @@ function SideDrawer(props) {
                 setYAxis(event.target.value);
               }}
             >
-              <MenuItem value={"average_price"}>average_price</MenuItem>
-              <MenuItem value={"floor_price"}>floor_price</MenuItem>
-              <MenuItem value={"follower_count"}>follower_count</MenuItem>
+              {multiNFTAxisMenuItems}
             </Select>
           </FormControl>
           <FormControl>
@@ -224,9 +249,7 @@ function SideDrawer(props) {
                 setY1Axis(event.target.value);
               }}
             >
-              <MenuItem value={"average_price"}>average_price</MenuItem>
-              <MenuItem value={"floor_price"}>floor_price</MenuItem>
-              <MenuItem value={"follower_count"}>follower_count</MenuItem>
+              {multiNFTAxisMenuItems}
             </Select>
           </FormControl>
         </ThemeProvider>
@@ -327,6 +350,17 @@ function SideDrawer(props) {
       }
       if (isMounted) setCollectionOptions(data);
     });
+
+    axios
+      .get("http://139.99.72.60:4000/all-collections-names-with-twitter")
+      .then((res) => {
+        let data = [];
+        for (let i = 0; i < res.data.length; i++) {
+          data[i] = res.data[i].name;
+        }
+        if (isMounted) setCollectOptWithTwit(data);
+      });
+
     return () => {
       isMounted = false;
     };
@@ -378,7 +412,7 @@ function SideDrawer(props) {
                   sx={{ width: "100%" }}
                   id="tags-standard"
                   onChange={selectCollection}
-                  options={collectionOptions}
+                  options={collectOptWithTwit}
                   getOptionLabel={(option) => option}
                   defaultValue={[]}
                   renderInput={(params) => (
