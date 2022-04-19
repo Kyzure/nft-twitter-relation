@@ -35,11 +35,20 @@ app.get('/all-collections-info', (req, res) => {
     const sd = convertDateTime(startDate);
     const ed = convertDateTime(endDate);
     mysqlConnection.query(`
-    SELECT DISTINCT opensea_top100.name, opensea_top100.average_price, opensea_top100.floor_price, tw_user.followers_count
-    FROM opensea_top100, tw_user
-    WHERE opensea_top100.twitter_username = tw_user.username
-    AND opensea_top100.created between ${sd} and ${ed}
-    AND tw_user.created between ${sd} and ${ed}`, (err, results) => {
+    WITH opensea_latest AS (
+        SELECT name, MAX(average_price) as average_price, MAX(floor_price) as floor_price, MAX(total_volume) as total_volume, MAX(total_sales) as total_sales, MAX(total_supply) as total_supply, MAX(count) as count, MAX(num_owners) as num_owners, MAX(market_cap) as market_cap, MAX(twitter_username) as twitter_username, MAX(created) as created
+        FROM opensea_top100
+        WHERE created between ${sd} AND ${ed} AND twitter_username IS NOT NULL
+        GROUP BY name
+      ), Z AS (
+        SELECT author_id, SUM(retweet_count) as retweet_count, SUM(reply_count) as reply_count, SUM(like_count) as like_count
+        FROM tw_tweet
+        GROUP BY author_id
+      )
+      SELECT DISTINCT opensea_latest.name, opensea_latest.average_price, opensea_latest.floor_price, opensea_latest.total_volume, opensea_latest.total_sales, opensea_latest.total_supply, opensea_latest.count, opensea_latest.num_owners, opensea_latest.market_cap, Z.retweet_count, Z.reply_count,tw_user.followers_count, tw_user.tweet_count
+      FROM opensea_latest, tw_user, Z
+      WHERE opensea_latest.twitter_username = tw_user.username AND tw_user.user_id = Z.author_id
+      AND tw_user.created between ${sd} and ${ed}`, (err, results) => {
         if (err) res.status(500).send(err);
         res.send(results);
     });
@@ -98,7 +107,7 @@ async function getTweetInfoOneDate(name, date) {
             GROUP BY author_id
             )
             
-            SELECT retweet_count, reply_count, like_count, one_day_sales, one_day_average_price
+            SELECT retweet_count, reply_count, like_count, one_day_sales, one_day_average_price, '${dateSearchStr.slice(0, -1)}'
             FROM Y, Z
             WHERE Y.user_id = Z.author_id;
         `;
