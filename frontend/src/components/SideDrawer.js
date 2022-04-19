@@ -62,6 +62,22 @@ function SideDrawer(props) {
   const [yAxis, setYAxis] = React.useState('');
   const [y1Axis, setY1Axis] = React.useState('');
 
+  const multiNFTAxisOptions = [
+    "average_price",
+    "count",
+    "floor_price",
+    "followers_count",
+    "market_cap",
+    "num_owners",
+    "reply_count",
+    "retweet_count",
+    "total_sales",
+    "total_supply",
+    "total_volume",
+    "tweet_count"
+  ];
+  const multiNFTAxisMenuItems = multiNFTAxisOptions.map(option => <MenuItem key={option} value={option}>{option}</MenuItem>);
+
   const selectCollection = (_event, newValue) => {
     if (newValue.length === 0) {
       setYAxis('');
@@ -70,8 +86,8 @@ function SideDrawer(props) {
       setYAxis('like_count');
       setY1Axis('one_day_average_price');
     } else {
-      setYAxis('average_price');
-      setY1Axis('floor_price');
+      setYAxis(multiNFTAxisOptions[0]);
+      setY1Axis(multiNFTAxisOptions[1]);
     }
     setCollection([...newValue]);
   };
@@ -174,9 +190,7 @@ function SideDrawer(props) {
                   setYAxis(event.target.value);
                 }}
               >
-                <MenuItem value={"average_price"}>average_price</MenuItem>
-                <MenuItem value={"floor_price"}>floor_price</MenuItem>
-                <MenuItem value={"follower_count"}>follower_count</MenuItem>
+                { multiNFTAxisMenuItems }
             </Select>
           </FormControl>
           <FormControl>
@@ -190,9 +204,7 @@ function SideDrawer(props) {
                 setY1Axis(event.target.value);
               }}
             >
-                <MenuItem value={"average_price"}>average_price</MenuItem>
-                <MenuItem value={"floor_price"}>floor_price</MenuItem>
-                <MenuItem value={"follower_count"}>follower_count</MenuItem>
+                { multiNFTAxisMenuItems }
             </Select>
           </FormControl>
         </>
