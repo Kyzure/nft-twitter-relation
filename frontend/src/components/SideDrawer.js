@@ -57,8 +57,8 @@ function SideDrawer(props) {
   const [collectOptWithTwit, setCollectOptWithTwit] = React.useState([]);
 
   const [collection, setCollection] = React.useState([]);
-  const [startDate, setStartDate] = React.useState(null);
-  const [endDate, setEndDate] = React.useState(null);
+  const [startDate, setStartDate] = React.useState(new Date('April 15, 2022 00:00:00'));
+  const [endDate, setEndDate] = React.useState(new Date());
   const [yAxis, setYAxis] = React.useState('');
   const [y1Axis, setY1Axis] = React.useState('');
 
@@ -104,6 +104,7 @@ function SideDrawer(props) {
             }}
             renderInput={(params) => <TextField {...params} />}
             inputFormat="dd/MM/yyyy"
+            minDate={new Date('April 1, 2022 00:00:00')}
           />
           <DatePicker
             label="End Date"
@@ -113,6 +114,7 @@ function SideDrawer(props) {
             }}
             renderInput={(params) => <TextField {...params} />}
             inputFormat="dd/MM/yyyy"
+            maxDate={new Date()}
           />
         </LocalizationProvider>
       );
@@ -128,6 +130,8 @@ function SideDrawer(props) {
             }}
             renderInput={(params) => <TextField {...params} />}
             inputFormat="dd/MM/yyyy"
+            minDate={new Date('April 15, 2022 00:00:00')}
+            maxDate={new Date()}
           />
         </LocalizationProvider>
       );
