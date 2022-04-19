@@ -97,9 +97,9 @@ async function getTweetInfoOneDate(name, date) {
         const ed = convertDateTime(endDate);
         const queryStr = `
             WITH X AS (
-            SELECT twitter_username, MAX(one_day_sales), MAX(one_day_average_price)
+            SELECT twitter_username, MAX(one_day_sales) as one_day_sales, MAX(one_day_average_price) as one_day_average_price
             FROM opensea_top100
-            WHERE name = '${name}' AND created BETWEEN ${sd} AND ${ed}
+            WHERE name = '${name}' AND created BETWEEN ${sd} AND ${ed} AND twitter_username IS NOT NULL
             GROUP BY twitter_username
             ),
             Y AS (
