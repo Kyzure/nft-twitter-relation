@@ -54,6 +54,7 @@ function SideDrawer(props) {
   }));
 
   const [collectionOptions, setCollectionOptions] = React.useState([]);
+  const [collectOptWithTwit, setCollectOptWithTwit] = React.useState([]);
 
   const [collection, setCollection] = React.useState([]);
   const [startDate, setStartDate] = React.useState(null);
@@ -284,7 +285,17 @@ function SideDrawer(props) {
           data[i] = res.data[i].name
         }
         if (isMounted) setCollectionOptions(data) })
-      return () => { isMounted = false };
+
+    axios.get("http://139.99.72.60:4000/all-collections-names-with-twitter")
+    .then((res) => { 
+      let data = []
+      for (let i = 0; i < res.data.length; i++) {
+        data[i] = res.data[i].name
+      }
+      if (isMounted) setCollectOptWithTwit(data) })
+
+    return () => { isMounted = false };
+      
   }, []);  
 
   return (
@@ -326,7 +337,7 @@ function SideDrawer(props) {
                   multiple
                   id="tags-standard"
                   onChange={ selectCollection }
-                  options={ collectionOptions }
+                  options={ collectOptWithTwit }
                   getOptionLabel={(option) => option}
                   defaultValue={ [] }
                   renderInput={(params) => (

@@ -22,6 +22,13 @@ app.get('/all-collections-names', (req, res) => {
     })
 })
 
+app.get('/all-collections-names-with-twitter', (req, res) => {
+    mysqlConnection.query(`SELECT DISTINCT name FROM opensea_top100 WHERE twitter_username IS NOT NULL`, (err, results) => {
+        if (err) res.status(500).send(err);
+        res.send(results);
+    })
+})
+
 app.get('/all-collections-info', (req, res) => {
     if (!req.query || !req.query.date) {
         res.status(400).send("Missing date in params");
