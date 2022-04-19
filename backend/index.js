@@ -108,14 +108,13 @@ async function getTweetInfoOneDate(name, date) {
             LIMIT 1
             ),
             Z AS (
-            SELECT author_id, SUM(retweet_count) as retweet_count, SUM(reply_count) as reply_count, SUM(like_count) as like_count
+            SELECT author_id, SUM(retweet_count) as retweet_count
             FROM tw_tweet
             WHERE created_at LIKE '${dateSearchStr}'
             GROUP BY author_id
-            HAVING reply_count <> 0 AND like_count <> 0
             )
             
-            SELECT retweet_count, reply_count, like_count, one_day_sales, one_day_average_price, '${dateSearchStr.slice(0, -1)}'
+            SELECT retweet_count, one_day_sales, one_day_average_price, '${dateSearchStr.slice(0, -1)}'
             FROM Y, Z
             WHERE Y.user_id = Z.author_id;
         `;
