@@ -1,45 +1,53 @@
-import * as React from 'react';
-import '../styles/Dashboard.scss';
-import MultiChart from './MultiChart.tsx';
+import * as React from "react";
+import "../styles/Dashboard.scss";
+import MultiChart from "./MultiChart.tsx";
 
-import Box from '@mui/material/Box';
-import CssBaseline from '@mui/material/CssBaseline';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem'
-import Select from '@mui/material/Select';
-import Stack from '@mui/material/Stack';
+import Box from "@mui/material/Box";
+import CssBaseline from "@mui/material/CssBaseline";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import Stack from "@mui/material/Stack";
+import { styled } from "@mui/material/styles";
 
+const MenuItemStyled = styled(MenuItem)(({ theme }) => ({
+  color: "#202020",
+}));
 
 function Dashboard(props) {
-  const [yAxis, setYAxis] = React.useState('follower_count');
-  const [y1Axis, setY1Axis] = React.useState('floor_price');
+  const [yAxis, setYAxis] = React.useState("follower_count");
+  const [y1Axis, setY1Axis] = React.useState("floor_price");
 
   const graphSelection = (
     <Stack
-      alignItems="center" 
+      alignItems="center"
       direction="row"
       spacing="100px"
+      sx={{ paddingBottom: "20px" }}
     >
-      <FormControl fullWidth>
+      <FormControl fullWidth sx={{ background: "#202020" }}>
         <InputLabel id="yAxisLabel">Select Y-Axis</InputLabel>
         <Select
-            labelId="yAxisLabel"
-            id="Y-Axis"
-            value={yAxis}
-            label="Y-Axis"
-            onChange={(event) => {
-              console.log(event);
-              setYAxis(event.target.value);
-            }}
-          >
-            <MenuItem value={"floor_price"}>Floor Price</MenuItem>
-            <MenuItem value={"follower_count"}>Follower Count</MenuItem>
-            <MenuItem value={"like_count"}>Like Count</MenuItem>
-            <MenuItem value={"market_value"}>Market Value</MenuItem>
+          sx={{ background: "#202020" }}
+          labelId="yAxisLabel"
+          id="Y-Axis"
+          value={yAxis}
+          label="Y-Axis"
+          onChange={(event) => {
+            console.log(event);
+            setYAxis(event.target.value);
+          }}
+        >
+          <MenuItemStyled value={"floor_price"}>Floor Price</MenuItemStyled>
+          <MenuItemStyled value={"follower_count"}>
+            Follower Count
+          </MenuItemStyled>
+          <MenuItemStyled value={"like_count"}>Like Count</MenuItemStyled>
+          <MenuItemStyled value={"market_value"}>Market Value</MenuItemStyled>
         </Select>
       </FormControl>
-      <FormControl fullWidth>
+      <FormControl fullWidth sx={{ background: "#202020" }}>
         <InputLabel id="y1AxisLabel">Select Y1-Axis</InputLabel>
         <Select
           labelId="y1AxisLabel"
@@ -50,28 +58,42 @@ function Dashboard(props) {
             setY1Axis(event.target.value);
           }}
         >
-            <MenuItem value={"floor_price"}>Floor Price</MenuItem>
-            <MenuItem value={"follower_count"}>Follower Count</MenuItem>
-            <MenuItem value={"like_count"}>Like Count</MenuItem>
-            <MenuItem value={"market_value"}>Market Value</MenuItem>
+          <MenuItemStyled value={"floor_price"}>Floor Price</MenuItemStyled>
+          <MenuItemStyled value={"follower_count"}>
+            Follower Count
+          </MenuItemStyled>
+          <MenuItemStyled value={"like_count"}>Like Count</MenuItemStyled>
+          <MenuItemStyled value={"market_value"}>Market Value</MenuItemStyled>
         </Select>
       </FormControl>
     </Stack>
   );
 
-
   function Display() {
     if (props.collection.length === 0) {
-      return (
-        <h1> Please select at least one NFT. </h1>
-      );
+      return <h1> Please select at least one NFT. </h1>;
     } else if (props.collection.length === 1) {
-      const mockFollowerCount = [5364,3456,3443,1234,1234,3214,4000,5322,2313,7654]
-      const mockFloorPrice = [1.99, 2.00, 2.15, 1.01, 3.5, 4.8, 1.91, 5.53, 0.88, 1.02]
-      const mockNFTNames = ["Ayy", "Bee", "Cee", "Dee", "Ee", "Eff", "Gee", "Aitch", "Aye", "Jay"]
+      const mockFollowerCount = [
+        5364, 3456, 3443, 1234, 1234, 3214, 4000, 5322, 2313, 7654,
+      ];
+      const mockFloorPrice = [
+        1.99, 2.0, 2.15, 1.01, 3.5, 4.8, 1.91, 5.53, 0.88, 1.02,
+      ];
+      const mockNFTNames = [
+        "Ayy",
+        "Bee",
+        "Cee",
+        "Dee",
+        "Ee",
+        "Eff",
+        "Gee",
+        "Aitch",
+        "Aye",
+        "Jay",
+      ];
       return (
         <Box>
-          { graphSelection }
+          {graphSelection}
           <MultiChart
             name={"MULTICHART"}
             yData={mockFollowerCount}
@@ -83,12 +105,27 @@ function Dashboard(props) {
         </Box>
       );
     } else {
-      const mockFollowerCount = [5364,3456,3443,1234,1234,3214,4000,5322,2313,7654]
-      const mockFloorPrice = [1.99, 2.00, 2.15, 1.01, 3.5, 4.8, 1.91, 5.53, 0.88, 1.02]
-      const mockNFTNames = ["Ayy", "Bee", "Cee", "Dee", "Ee", "Eff", "Gee", "Aitch", "Aye", "Jay"]
+      const mockFollowerCount = [
+        5364, 3456, 3443, 1234, 1234, 3214, 4000, 5322, 2313, 7654,
+      ];
+      const mockFloorPrice = [
+        1.99, 2.0, 2.15, 1.01, 3.5, 4.8, 1.91, 5.53, 0.88, 1.02,
+      ];
+      const mockNFTNames = [
+        "Ayy",
+        "Bee",
+        "Cee",
+        "Dee",
+        "Ee",
+        "Eff",
+        "Gee",
+        "Aitch",
+        "Aye",
+        "Jay",
+      ];
       return (
         <Box>
-          { graphSelection }
+          {graphSelection}
           <MultiChart
             name={"MULTICHART"}
             yData={mockFollowerCount}
@@ -104,12 +141,16 @@ function Dashboard(props) {
 
   return (
     <Box
-      sx={{ flexGrow: 1, p: 3,
-      width: `cal(100% - ${props.drawerWidth - 300 }px)`,
-      paddingTop: '50px',
-      paddingLeft: `${props.drawerWidth + 10}px`}}>
-        { Display() }
-        <CssBaseline />
+      sx={{
+        flexGrow: 1,
+        p: 3,
+        width: `cal(100% - ${props.drawerWidth - 300}px)`,
+        paddingTop: "50px",
+        paddingLeft: `${props.drawerWidth + 10}px`,
+      }}
+    >
+      {Display()}
+      <CssBaseline />
     </Box>
   );
 }
