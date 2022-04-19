@@ -98,7 +98,7 @@ async function getTweetInfoOneDate(name, date) {
             GROUP BY author_id
             )
             
-            SELECT retweet_count, reply_count, like_count, one_day_sales, one_day_average_price
+            SELECT retweet_count, reply_count, like_count, one_day_sales, one_day_average_price. ${date}
             FROM Y, Z
             WHERE Y.user_id = Z.author_id;
         `;
