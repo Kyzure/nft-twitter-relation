@@ -111,7 +111,7 @@ async function getTweetInfoOneDate(name, date) {
             Z AS (
             SELECT author_id, SUM(retweet_count) as retweet_count, SUM(reply_count) as reply_count, SUM(like_count) as like_count
             FROM tw_tweet
-            WHERE created_at LIKE '${dateSearchStr}' AND reply_count <> 0 AND like_count <> 0
+            WHERE created_at LIKE '${dateSearchStr}'
             GROUP BY author_id
             )
             
