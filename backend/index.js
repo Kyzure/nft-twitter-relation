@@ -35,7 +35,7 @@ app.get('/all-collections-info', (req, res) => {
     const sd = convertDateTime(startDate);
     const ed = convertDateTime(endDate);
     mysqlConnection.query(`
-    SELECT DISTINCT opensea_top100.name, opensea_top100.average_price, opensea_top100.floor_price, tw_user.followers_count
+    SELECT DISTINCT opensea_top100.name, opensea_top100.average_price, opensea_top100.floor_price, opensea_top100.total_volume, opensea_top100.total_sales, opensea_top100.total_supply, opensea_top100.count, opensea_top100.num_owners, opensea_top100.market_cap, tw_user.followers_count, tw_user.tweet_count
     FROM opensea_top100, tw_user
     WHERE opensea_top100.twitter_username = tw_user.username
     AND opensea_top100.created between ${sd} and ${ed}
@@ -98,7 +98,7 @@ async function getTweetInfoOneDate(name, date) {
             GROUP BY author_id
             )
             
-            SELECT retweet_count, reply_count, like_count, one_day_sales, one_day_average_price, '${date}'
+            SELECT retweet_count, reply_count, like_count, one_day_sales, one_day_average_price, '${dateSearchStr.slice(0, -1)}'
             FROM Y, Z
             WHERE Y.user_id = Z.author_id;
         `;
