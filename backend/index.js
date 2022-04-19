@@ -112,6 +112,7 @@ async function getTweetInfoOneDate(name, date) {
             FROM tw_tweet
             WHERE created_at LIKE '${dateSearchStr}'
             GROUP BY author_id
+            HAVING reply_count <> 0 AND like_count <> 0
             )
             
             SELECT retweet_count, reply_count, like_count, one_day_sales, one_day_average_price, '${dateSearchStr.slice(0, -1)}'
