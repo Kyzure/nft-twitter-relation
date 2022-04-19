@@ -17,12 +17,39 @@ import { styled } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-
+import Paper from "@mui/material/Paper";
 import GitHubIcon from "@mui/icons-material/GitHub";
 
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+
+const dateTheme = createTheme({
+  palette: {
+    primary: {
+      main: "#BB86FC",
+    },
+    text: {
+      primary: "#959595",
+      secondary: "#ffffff",
+      tertiary: "#959595",
+    },
+  },
+});
+
+const secondTheme = createTheme({
+  palette: {
+    primary: {
+      main: "#BB86FC",
+    },
+    text: {
+      primary: "#959595",
+      secondary: "#ffffff",
+      tertiary: "#959595",
+    },
+  },
+});
 
 const TextFieldStyled = styled(TextField)(({ theme }) => ({
   "& label.Mui-focused": {
@@ -79,39 +106,43 @@ function SideDrawer(props) {
     if (collection.length === 1) {
       return (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <DatePicker
-            label="Start Date"
-            value={startDate}
-            onChange={(newValue) => {
-              setStartDate(newValue);
-            }}
-            renderInput={(params) => <TextField {...params} />}
-            inputFormat="dd/MM/yyyy"
-          />
-          <DatePicker
-            label="End Date"
-            value={endDate}
-            onChange={(newValue) => {
-              setEndDate(newValue);
-            }}
-            renderInput={(params) => <TextField {...params} />}
-            inputFormat="dd/MM/yyyy"
-          />
+          <ThemeProvider theme={dateTheme}>
+            <DatePicker
+              label="Start Date"
+              value={startDate}
+              onChange={(newValue) => {
+                setStartDate(newValue);
+              }}
+              renderInput={(params) => <TextField {...params} />}
+              inputFormat="dd/MM/yyyy"
+            />
+            <DatePicker
+              label="End Date"
+              value={endDate}
+              onChange={(newValue) => {
+                setEndDate(newValue);
+              }}
+              renderInput={(params) => <TextField {...params} />}
+              inputFormat="dd/MM/yyyy"
+            />
+          </ThemeProvider>
         </LocalizationProvider>
       );
     }
     if (collection.length > 1) {
       return (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <DatePicker
-            label="Select Date"
-            value={startDate}
-            onChange={(newValue) => {
-              setStartDate(newValue);
-            }}
-            renderInput={(params) => <TextField {...params} />}
-            inputFormat="dd/MM/yyyy"
-          />
+          <ThemeProvider theme={dateTheme}>
+            <DatePicker
+              label="Select Date"
+              value={startDate}
+              onChange={(newValue) => {
+                setStartDate(newValue);
+              }}
+              renderInput={(params) => <TextField {...params} />}
+              inputFormat="dd/MM/yyyy"
+            />
+          </ThemeProvider>
         </LocalizationProvider>
       );
     }
@@ -120,7 +151,7 @@ function SideDrawer(props) {
   function SelectAxis() {
     if (collection.length === 1) {
       return (
-        <>
+        <ThemeProvider theme={secondTheme}>
           <FormControl>
             <InputLabel id="yAxisLabel">Select Y-Axis</InputLabel>
             <Select
@@ -161,11 +192,11 @@ function SideDrawer(props) {
               </MenuItem>
             </Select>
           </FormControl>
-        </>
+        </ThemeProvider>
       );
     } else if (collection.length > 1) {
       return (
-        <>
+        <ThemeProvider theme={secondTheme}>
           <FormControl>
             <InputLabel id="yAxisLabel">Select Y-Axis</InputLabel>
             <Select
@@ -198,7 +229,7 @@ function SideDrawer(props) {
               <MenuItem value={"follower_count"}>follower_count</MenuItem>
             </Select>
           </FormControl>
-        </>
+        </ThemeProvider>
       );
     }
   }
@@ -328,10 +359,10 @@ function SideDrawer(props) {
             <Divider sx={{ width: "85%", margin: "auto" }} />
 
             <Stack
-              alignItems="center"
+              alignItems="left"
               direction="column"
-              spacing="25px"
-              sx={{ padding: "50px 0 0 15px" }}
+              spacing="20px"
+              sx={{ padding: "20px 28px 0 15px" }}
             >
               <Stack
                 alignItems="left"
@@ -344,7 +375,7 @@ function SideDrawer(props) {
                 </Typography>
                 <Autocomplete
                   multiple
-                  sx={{ width: "86%" }}
+                  sx={{ width: "100%" }}
                   id="tags-standard"
                   onChange={selectCollection}
                   options={collectionOptions}
@@ -358,12 +389,24 @@ function SideDrawer(props) {
                     />
                   )}
                   value={collection}
+                  PaperComponent={({ children }) => (
+                    <Paper style={{ background: "#ffffff", color: "#959595" }}>
+                      {children}
+                    </Paper>
+                  )}
                 />
               </Stack>
 
-              {SelectDate()}
-              {SelectAxis()}
-              {ShowGraph()}
+              <Stack
+                alignItems="left"
+                direction="column"
+                spacing="20px"
+                sx={{ width: "100%" }}
+              >
+                {SelectDate()}
+                {SelectAxis()}
+                {ShowGraph()}
+              </Stack>
             </Stack>
           </Box>
         </DrawerStyled>

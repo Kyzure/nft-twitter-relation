@@ -13,7 +13,7 @@ function Dashboard(props) {
         flexGrow: 1,
         p: 3,
         width: `cal(100% - ${props.drawerWidth - 300}px)`,
-        paddingTop: "50px",
+        paddingTop: "64px",
         paddingLeft: `${props.drawerWidth + 10}px`,
       }}
     >
