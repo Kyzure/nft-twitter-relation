@@ -1,18 +1,21 @@
-import * as React from 'react';
-import '../styles/Dashboard.scss';
+import * as React from "react";
+import "../styles/Dashboard.scss";
 
-import Box from '@mui/material/Box';
-import CssBaseline from '@mui/material/CssBaseline';
+import Box from "@mui/material/Box";
+import CssBaseline from "@mui/material/CssBaseline";
 
-import MultiChart from './MultiChart.tsx';
+import MultiChart from "./MultiChart.tsx";
 
 function Dashboard(props) {
   return (
     <Box
-      sx={{ flexGrow: 1, p: 3,
-      width: `cal(100% - ${props.drawerWidth - 300 }px)`,
-      paddingTop: '50px',
-      paddingLeft: `${props.drawerWidth + 10}px`}}
+      sx={{
+        flexGrow: 1,
+        p: 3,
+        width: `cal(100% - ${props.drawerWidth - 300}px)`,
+        paddingTop: "68px",
+        paddingLeft: `${props.drawerWidth + 10}px`,
+      }}
     >
       <CssBaseline />
       <MultiChart
