@@ -301,12 +301,13 @@ function SideDrawer(props) {
         }
         props.setData(data);
       } else if (collection.length > 1) {
-        var filtered = res.data.filter(x => collection.includes(x.name) === true);
+        var filtered = res.data.filter(x => collection.includes(x.slug) === true);
         filtered.forEach(f => {
-          data.xData.push(f.name);
+          data.xData.push(f.slug);
           data.yData.push(f[yAxis]);
           data.y1Data.push(f[y1Axis]);
         });
+        console.log(filtered)
         props.setData(data);
       }
     });
@@ -318,7 +319,7 @@ function SideDrawer(props) {
       .then((res) => { 
         let data = []
         for (let i = 0; i < res.data.length; i++) {
-          data[i] = res.data[i].name
+          data[i] = res.data[i].slug
         }
         if (isMounted) setCollectionOptions(data) })
 
@@ -326,7 +327,7 @@ function SideDrawer(props) {
     .then((res) => { 
       let data = []
       for (let i = 0; i < res.data.length; i++) {
-        data[i] = res.data[i].name
+        data[i] = res.data[i].slug
       }
       if (isMounted) setCollectOptWithTwit(data) })
 
