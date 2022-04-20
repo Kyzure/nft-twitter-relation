@@ -219,21 +219,21 @@ function SideDrawer(props) {
   function ShowGraph() {
     if (collection.length === 1) {
       return (
-        <Button color="secondary" onClick={ () => GetTweetInfo(collection[0], startDate, endDate) }>
+        <Button color="secondary" onClick={ () => TwitterUsernameSingleInfo(collection[0], startDate, endDate) }>
           Show Tweets
         </Button>
       );
     } else if (collection.length > 1) {
       return (
-        <Button color="secondary" onClick={ () => GetAllCollectionInfo(startDate) }>
+        <Button color="secondary" onClick={ () => TwitterUsernameAllInfo(startDate) }>
           Show Collection Info
         </Button>
       )
     }
   }
 
-  function GetAllCollectionInfo(date) {
-    const path = "all-collections-info"
+  function TwitterUsernameAllInfo(date) {
+    const path = "twitter-username-all-info"
     const query = {
       "date": date 
     }
@@ -241,9 +241,29 @@ function SideDrawer(props) {
   }
 
   // Try to make this 7 days or so for graph to look nice
-  function GetTweetInfo(nft, startDate, endDate) {
-    const path = "tweets/" + nft
+  function TwitterUsernameSingleInfo(nft, startDate, endDate) {
+    const path = "twitter-username-single-info"
     const query = {
+      "slug": nft,
+      "startDate": startDate,
+      "endDate": endDate
+    }
+    GetAxiosData(path, query)
+  }
+
+  function SlugTweetAllInfo(date) {
+    const path = "slug-tweet-all-info"
+    const query = {
+      "date": date 
+    }
+    GetAxiosData(path, query)
+  }
+
+  // Try to make this 7 days or so for graph to look nice
+  function SlugTweetSingleInfo(nft, startDate, endDate) {
+    const path = "slug-tweet-single-info"
+    const query = {
+      "slug": nft,
       "startDate": startDate,
       "endDate": endDate
     }
