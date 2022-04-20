@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -8,12 +8,12 @@ import {
   Title,
   Tooltip,
   Legend,
-} from 'chart.js';
-import { Line } from 'react-chartjs-2';
-import { styled } from '@mui/material/styles';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
+} from "chart.js";
+import { Line } from "react-chartjs-2";
+import { styled } from "@mui/material/styles";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
 
 ChartJS.register(
   CategoryScale,
@@ -26,19 +26,19 @@ ChartJS.register(
 );
 
 const CardStyled = styled(Card)(({ theme }) => ({
-  width: '75%',
-  height: '75%',
-  minHeight: '300px',
-  minWidth: '300px',
+  width: "85%",
+  height: "75%",
+  minHeight: "300px",
+  minWidth: "300px",
   backgroundColor: theme.palette.primary.main,
-  margin: 'auto'
+  margin: "auto",
 }));
 
 function MultiChart(props) {
   const options = {
     responsive: true,
     interaction: {
-      mode: 'index' as const,
+      mode: "index" as const,
       intersect: false,
     },
     plugins: {
@@ -49,20 +49,21 @@ function MultiChart(props) {
     },
     scales: {
       y: {
-        type: 'linear' as const,
+        type: "linear" as const,
         display: true,
-        position: 'left' as const,
+        position: "left" as const,
       },
       y1: {
-        type: 'linear' as const,
+        type: "linear" as const,
         display: true,
-        position: 'right' as const,
+        position: "right" as const,
         grid: {
-          drawOnChartArea: false,
+          drawOnChartArea: true,
+          color: "#454545",
         },
       },
     },
-  }
+  };
 
   const labels = props.labels;
 
@@ -72,28 +73,25 @@ function MultiChart(props) {
       {
         label: props.yLabel,
         data: props.yData,
-        borderColor: 'rgb(255, 99, 132)',
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-        yAxisID: 'y',
+        borderColor: "rgb(255, 99, 132)",
+        backgroundColor: "rgba(255, 99, 132, 0.5)",
+        yAxisID: "y",
       },
       {
         label: props.y1Label,
         data: props.y1Data,
-        borderColor: 'rgb(53, 162, 235)',
-        backgroundColor: 'rgba(53, 162, 235, 0.5)',
-        yAxisID: 'y1',
-      }
-    ] 
-  }
+        borderColor: "rgb(53, 162, 235)",
+        backgroundColor: "rgba(53, 162, 235, 0.5)",
+        yAxisID: "y1",
+      },
+    ],
+  };
 
   return (
     <CardStyled>
       <CardContent>
-        <Typography variant="h5" component="div" sx={{ margin: 'auto' }}>
-          <Line 
-            options={options}
-            data={data}
-          />
+        <Typography variant="h5" component="div" sx={{ margin: "auto" }}>
+          <Line options={options} data={data} />
         </Typography>
       </CardContent>
     </CardStyled>
