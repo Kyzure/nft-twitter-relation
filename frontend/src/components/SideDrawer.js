@@ -26,6 +26,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
+import DropdownSelect from "./DropdownSelect.js";
+
 const dateTheme = createTheme({
   palette: {
     primary: {
@@ -81,61 +83,95 @@ function SideDrawer(props) {
     },
   }));
 
-  const [collectionOptions, setCollectionOptions] = React.useState([]);
-  const [collectOptWithTwit, setCollectOptWithTwit] = React.useState([]);
+  // To select type of graph
+  const graphTypes = ["TwitterUsernameSingleInfo", "TwitterUsernameAllInfo", "SlugTweetSingleInfo", "SlugTweetAllInfo", "SlugTweetSingleInfoOnlyTweets"];
+  const [graphType, setGraphType] = React.useState(graphTypes[0]);
+  const selectGraphType = (event) => {
+    setGraphType(event.target.value);
+    setCollection([]);
+  };
+  function GraphTypeDropdownSelect () {
+    return (
+      <Stack
+        alignItems="left"
+        direction="column"
+        spacing="20px"
+        sx={{ width: "100%" }}>
+        <Typography color="text.main" variant="h6">
+          Select Graph Type
+        </Typography>
+        <DropdownSelect
+          sx={{ width: "100%", padding: "0 0 0 0" }}
+          value={ graphType }
+          label="GraphType"
+          selectOption={ selectGraphType }
+          options={ graphTypes } />
+      </Stack>
+    )
+  }
 
+  // To select collection(s)
   const [collection, setCollection] = React.useState([]);
-  const [startDate, setStartDate] = React.useState(
-    new Date("April 16, 2022 00:00:00")
-  );
-  const [endDate, setEndDate] = React.useState(new Date());
-  const [yAxis, setYAxis] = React.useState("");
-  const [y1Axis, setY1Axis] = React.useState("");
+  const selectCollections = (_event, newValue) => {
+    // Only allow single collection for single collection graph type
+    if (graphType === graphTypes[0] || graphType === graphTypes[2] || graphType === graphTypes[4]) {
+      setYAxis(singleNFTAxisOptions[0]);
+      setY1Axis(singleNFTAxisOptions[1]);
+      if (newValue.length <= 1) {
+        setCollection([...newValue]);
+      }
+    }
 
-  const singleNFTAxisOptions = [
-    "retweet_count",
-    "reply_count",
-    "like_count",
-    "one_day_sales",
-    "one_day_average_price"
-  ];
-  const singleNFTAxisMenuItems = singleNFTAxisOptions.map(option => <MenuItem key={option} value={option}>{option}</MenuItem>)
-  const multiNFTAxisOptions = [
-    "average_price",
-    "count",
-    "floor_price",
-    "followers_count",
-    "market_cap",
-    "num_owners",
-    "reply_count",
-    "retweet_count",
-    "total_sales",
-    "total_supply",
-    "total_volume",
-    "tweet_count",
-  ];
-  const multiNFTAxisMenuItems = multiNFTAxisOptions.map((option) => (
-    <MenuItem key={option} value={option}>
-      {option}
-    </MenuItem>
-  ));
-
-  const selectCollection = (_event, newValue) => {
-    if (newValue.length === 0) {
-      setYAxis("");
-      setY1Axis("");
-    } else if (newValue.length === 1) {
-      setYAxis("like_count");
-      setY1Axis("one_day_average_price");
-    } else {
+    // Only allow up to 10 collections for multiple collection graph type
+    if (graphType === graphTypes[1] || graphType === graphTypes[3]) {
       setYAxis(multiNFTAxisOptions[0]);
       setY1Axis(multiNFTAxisOptions[1]);
+      if (newValue.length <= 10) {
+        setCollection([...newValue]);
+      }
     }
-    setCollection([...newValue]);
   };
+  function CollectionsMultiSelect () {
+    return (
+      <Stack
+        alignItems="left"
+        direction="column"
+        spacing="20px"
+        sx={{ width: "100%" }}
+      >
+        <Typography color="text.main" variant="h6">
+          Select NFT collections
+        </Typography>
+        <Autocomplete
+          multiple
+          id="tags-standard"
+          onChange={selectCollections}
+          options={collectOptWithTwit}
+          getOptionLabel={(option) => option}
+          defaultValue={[]}
+          renderInput={(params) => (
+            <TextFieldStyled
+              {...params}
+              variant="outlined"
+              label={"OpenSea Collections"}
+            />
+          )}
+          value={collection}
+          PaperComponent={({ children }) => (
+            <Paper style={{ background: "#ffffff", color: "#959595" }}>
+              {children}
+            </Paper>
+          )}
+        />
+      </Stack>
+    )
+  }
 
+  // To select date(s)
+  const [startDate, setStartDate] = React.useState(new Date("April 16, 2022 00:00:00"));
+  const [endDate, setEndDate] = React.useState(new Date());
   function SelectDate() {
-    if (collection.length === 1) {
+    if (graphType === graphTypes[0] || graphType === graphTypes[2] || graphType === graphTypes[4]) {
       return (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <ThemeProvider theme={dateTheme}>
@@ -163,7 +199,7 @@ function SideDrawer(props) {
         </LocalizationProvider>
       );
     }
-    if (collection.length > 1) {
+    if (graphType === graphTypes[1] || graphType === graphTypes[3]) {
       return (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <ThemeProvider theme={dateTheme}>
@@ -184,6 +220,40 @@ function SideDrawer(props) {
     }
   }
 
+  // To select axis
+  const singleNFTAxisOptions = [
+    "average_price",
+    "count",
+    "like_count",
+    "market_cap",
+    "num_owners",
+    "one_day_average_price",
+    "one_day_sales",
+    "quote_count",
+    "reply_count",
+    "retweet_count",
+    "total_sales",
+    "total_supply",
+    "total_volume"
+  ]
+  const multiNFTAxisOptions = [
+    "average_price",
+    "count",
+    "floor_price",
+    "like_count",
+    "market_cap",
+    "num_owners",
+    "quote_count",
+    "reply_count",
+    "retweet_count",    
+    "total_sales",
+    "total_supply",
+    "total_volume"
+  ];
+  const singleNFTAxisMenuItems = singleNFTAxisOptions.map(option => <MenuItem key={option} value={option}>{option}</MenuItem>)
+  const multiNFTAxisMenuItems = multiNFTAxisOptions.map(option => <MenuItem key={option} value={option}> {option}</MenuItem>);
+  const [yAxis, setYAxis] = React.useState("");
+  const [y1Axis, setY1Axis] = React.useState("");
   function SelectAxis() {
     if (collection.length === 1) {
       return (
@@ -258,44 +328,69 @@ function SideDrawer(props) {
     }
   }
 
-  function ShowGraph() {
-    if (collection.length === 1) {
-      return (
-        <Button
-          color="secondary"
-          onClick={() =>
-            TwitterUsernameSingleInfo(collection[0], startDate, endDate)
-          }
-        >
-          Show Tweets
-        </Button>
-      );
-    } else if (collection.length > 1) {
-      return (
-        <Button
-          color="secondary"
-          onClick={() => TwitterUsernameAllInfo(startDate)}
-        >
-          Show Collection Info
-        </Button>
-      );
+  const [collectionOptions, setCollectionOptions] = React.useState([]);
+  const [collectOptWithTwit, setCollectOptWithTwit] = React.useState([]);
+
+  function ShowGraphButton() {
+    if (collection.length > 0) {
+      switch (graphType) {
+        case graphTypes[0]:
+          return (
+            <Button
+              color="secondary"
+              onClick={() =>
+                TwitterUsernameSingleInfo(collection[0], startDate, endDate)
+              }
+            >
+              Single NFT Twitter
+            </Button>
+          );
+        case graphTypes[1]:
+          return (
+            <Button
+              color="secondary"
+              onClick={() =>
+                TwitterUsernameAllInfo(startDate)
+              }
+            >
+              Multi NFT Twitter
+            </Button>
+          );
+        case graphTypes[2]:
+          return (
+            <Button
+              color="secondary"
+              onClick={() =>
+                SlugTweetSingleInfo(collection[0], startDate, endDate)
+              }
+            >
+              Single NFT Slug
+            </Button>
+          );
+        case graphTypes[3]:
+          return (
+            <Button
+              color="secondary"
+              onClick={() =>
+                SlugTweetAllInfo(startDate)
+              }
+            >
+              Multi NFT Slug
+            </Button>
+          );
+        default:
+          return (
+            <Button
+              color="secondary"
+              onClick={() =>
+                SlugTweetSingleInfoOnlyTweets(collection[0], startDate, endDate)
+              }
+            >
+              Single Slug only Tweet
+            </Button>
+          );
+      }
     }
-  }
-
-  function TwitterUsernameAllInfo(date) {
-    const path = "twitter-username-all-info";
-    const query = {
-      date: date,
-    };
-    GetAxiosData(path, query);
-  }
-
-  function SlugTweetAllInfo(date) {
-    const path = "slug-tweet-all-info";
-    const query = {
-      date: date,
-    };
-    GetAxiosData(path, query);
   }
 
   // Try to make this 7 days or so for graph to look nice
@@ -309,13 +404,29 @@ function SideDrawer(props) {
     GetAxiosData(path, query);
   }
 
-  // Try to make this 7 days or so for graph to look nice
-  function SlugTweetSingleInfo(nft, startDate, endDate) {
-    const path = "slug-tweet-single-info";
+  function TwitterUsernameAllInfo(date) {
+    const path = "twitter-username-all-info";
     const query = {
-      slug: nft,
-      startDate: startDate,
-      endDate: endDate,
+      date: date,
+    };
+    GetAxiosData(path, query);
+  }
+
+    // Try to make this 7 days or so for graph to look nice
+    function SlugTweetSingleInfo(nft, startDate, endDate) {
+      const path = "slug-tweet-single-info";
+      const query = {
+        slug: nft,
+        startDate: startDate,
+        endDate: endDate,
+      };
+      GetAxiosData(path, query);
+    }
+
+  function SlugTweetAllInfo(date) {
+    const path = "slug-tweet-all-info";
+    const query = {
+      date: date,
     };
     GetAxiosData(path, query);
   }
@@ -332,9 +443,11 @@ function SideDrawer(props) {
 
   // Remove when needed
   function Testing() {
-    TwitterUsernameSingleInfo("axie", "Apr 16 2022 00:00:00 UTC", "Apr 21 2022 00:00:00 UTC")
-    SlugTweetSingleInfo("axie", "Apr 16 2022 00:00:00 UTC", "Apr 21 2022 00:00:00 UTC")
-    SlugTweetSingleInfoOnlyTweets("axie", "Apr 14 2022 00:00:00 UTC", "Apr 21 2022 00:00:00 UTC")
+    // TwitterUsernameSingleInfo("axie", "Apr 16 2022 00:00:00 UTC", "Apr 21 2022 00:00:00 UTC")
+    // TwitterUsernameAllInfo("Apr 16 2022 00:00:00 UTC") // not working
+    // SlugTweetSingleInfo("axie", "Apr 16 2022 00:00:00 UTC", "Apr 21 2022 00:00:00 UTC")
+    // SlugTweetAllInfo("Apr 16 2022 00:00:00 UTC")
+    // SlugTweetSingleInfoOnlyTweets("axie", "Apr 14 2022 00:00:00 UTC", "Apr 21 2022 00:00:00 UTC")
   }
 
   // Function to get data from backend.
@@ -349,6 +462,7 @@ function SideDrawer(props) {
       params: query,
     }).then((res) => {
       var data = {
+        name: graphType,
         xData: [],
         yData: [],
         yLabel: yAxis,
@@ -356,7 +470,7 @@ function SideDrawer(props) {
         y1Label: y1Axis,
       };
       console.log(res.data);
-      if (collection.length === 1) {
+      if (graphType === graphTypes[0] || graphType === graphTypes[2] || graphType === graphTypes[4]) {
         for (var key in res.data) {
           if (res.data[key].length > 0) {
             data.xData.push(key);
@@ -365,7 +479,8 @@ function SideDrawer(props) {
           }
         }
         props.setData(data);
-      } else if (collection.length > 1) {
+      }
+      if (graphType === graphTypes[1] || graphType === graphTypes[3]) {
         var filtered = res.data.filter(
           (x) => collection.includes(x.slug) === true
         );
@@ -436,45 +551,17 @@ function SideDrawer(props) {
               spacing="25px"
               sx={{ padding: "20px 28px 0 15px" }}
             >
-              <Stack
-                alignItems="left"
-                direction="column"
-                spacing="20px"
-                sx={{ width: "100%" }}
-              >
-                <Typography color="text.main" variant="h6">
-                  Select NFT collection
-                </Typography>
-                <Autocomplete
-                  multiple
-                  id="tags-standard"
-                  onChange={selectCollection}
-                  options={collectOptWithTwit}
-                  getOptionLabel={(option) => option}
-                  defaultValue={[]}
-                  renderInput={(params) => (
-                    <TextFieldStyled
-                      {...params}
-                      variant="outlined"
-                      label={"OpenSea Collections"}
-                    />
-                  )}
-                  value={collection}
-                  PaperComponent={({ children }) => (
-                    <Paper style={{ background: "#ffffff", color: "#959595" }}>
-                      {children}
-                    </Paper>
-                  )}
-                />
-              </Stack>
+
+              { GraphTypeDropdownSelect() }
+              { CollectionsMultiSelect() }
+              { SelectDate() }
+              { SelectAxis() }
+              { ShowGraphButton() }
 
               <Button color="secondary" onClick={ () => Testing() }>
                 Testing
               </Button>
 
-              {SelectDate()}
-              {SelectAxis()}
-              {ShowGraph()}
             </Stack>
           </Box>
         </DrawerStyled>
