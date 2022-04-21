@@ -99,17 +99,17 @@ app.get('/slug-tweet-all-info', (req, res) => {
 
 // Twitter usename single info instead of slug and tweet
 app.get('/twitter-username-single-info', async (req, res) => {
-    SingleInfo(false, req, res);
+    await SingleInfo(false, req, res);
 });
 
 // We use slug to search for tweets for popularity measure here too
 // This one takes in date and NFT name to display out that particular's date sales and popularity
 app.get('/slug-tweet-single-info', async (req, res) => {
-    SingleInfo(true, req, res);
+    await SingleInfo(true, req, res);
 });
 
 app.get('/slug-tweet-single-info-only-tweets', async (req, res) => {
-    SingleInfo(true, req, res);
+    await SingleInfo(true, req, res);
 });
 
 
@@ -146,7 +146,7 @@ async function SingleInfo(type, req, res) {
     res.send(obj);
 }
 
-async function getTweetInfoOneDateA(slug, date, req, res) {
+async function getTweetInfoOneDateA(slug, date) {
     return new Promise((res, rej) => {
         const year = date.getFullYear();
         const monthStr = `${date.getMonth() + 1}`.padStart(2, "0");
@@ -187,7 +187,7 @@ async function getTweetInfoOneDateA(slug, date, req, res) {
     });
 }
 
-async function getTweetInfoOneDateB(slug, date, req, res) {
+async function getTweetInfoOneDateB(slug, date) {
     return new Promise((res, rej) => {
         const year = date.getFullYear();
         const monthStr = `${date.getMonth() + 1}`.padStart(2, "0");
@@ -222,7 +222,7 @@ async function getTweetInfoOneDateB(slug, date, req, res) {
     });
 }
 
-async function getTweetInfoOneDateC(slug, date, req, res) {
+async function getTweetInfoOneDateC(slug, date) {
     return new Promise((res, rej) => {
         const year = date.getFullYear();
         const monthStr = `${date.getMonth() + 1}`.padStart(2, "0");

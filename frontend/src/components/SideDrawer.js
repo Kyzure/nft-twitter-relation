@@ -334,6 +334,10 @@ function SideDrawer(props) {
     GetAxiosData(path, query);
   }
 
+  // Remove when needed
+  function Testing() {
+  }
+
   // Function to get data from backend.
   // path is the additional string added onto the url to GET from the right URL
   // query is an object stating the necessary requirements for the API
@@ -467,6 +471,10 @@ function SideDrawer(props) {
                   )}
                 />
               </Stack>
+
+              <Button color="secondary" onClick={ () => Testing() }>
+                Testing
+              </Button>
 
               {SelectDate()}
               {SelectAxis()}
