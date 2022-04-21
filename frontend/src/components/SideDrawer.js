@@ -447,7 +447,7 @@ function SideDrawer(props) {
     // TwitterUsernameAllInfo("Apr 16 2022 00:00:00 UTC") // not working
     // SlugTweetSingleInfo("axie", "Apr 16 2022 00:00:00 UTC", "Apr 21 2022 00:00:00 UTC")
     // SlugTweetAllInfo("Apr 16 2022 00:00:00 UTC")
-    // SlugTweetSingleInfoOnlyTweets("axie", "Apr 14 2022 00:00:00 UTC", "Apr 21 2022 00:00:00 UTC")
+    SlugTweetSingleInfoOnlyTweets("axie", "Apr 14 2022 00:00:00 UTC", "Apr 21 2022 00:00:00 UTC")
   }
 
   // Function to get data from backend.
@@ -469,15 +469,14 @@ function SideDrawer(props) {
         y1Data: [],
         y1Label: y1Axis,
       };
-      console.log(res.data);
       if (graphType === graphTypes[0] || graphType === graphTypes[2] || graphType === graphTypes[4]) {
-        for (var key in res.data) {
-          if (res.data[key].length > 0) {
-            data.xData.push(key);
-            data.yData.push(res.data[key][0][yAxis]);
-            data.y1Data.push(res.data[key][0][y1Axis]);
+        res.data.forEach(e => {
+          if (e.length > 0) {
+            data.xData.push(e[0].date);
+            data.yData.push(e[0][yAxis]);
+            data.y1Data.push(e[0][y1Axis]);
           }
-        }
+        });
         props.setData(data);
       }
       if (graphType === graphTypes[1] || graphType === graphTypes[3]) {
