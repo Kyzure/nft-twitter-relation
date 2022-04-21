@@ -198,22 +198,28 @@ async function getTweetInfoOneDateB(slug, date) {
         const endDate = new Date(date.valueOf() + msInDay);
         const ed = convertDateTime(endDate);
         const queryStr = `
-            WITH opensea AS (
-            SELECT slug, MAX(one_day_sales) as one_day_sales, MAX(one_day_average_price) as one_day_average_price
+        WITH X AS (
+            SELECT twitter_username, MAX(one_day_sales) as one_day_sales, MAX(one_day_average_price) as one_day_average_price
             FROM opensea_top100
-            WHERE slug = '${slug}' AND created BETWEEN '${sd}' AND '${ed}'
-            GROUP BY slug
+            WHERE slug = '${slug}' AND created BETWEEN '${sd}' AND '${ed}' AND twitter_username IS NOT NULL
+            GROUP BY twitter_username
             ),
-            tweet AS (
-            SELECT query, SUM(retweet_count) as retweet_count, SUM(reply_count) as reply_count, SUM(like_count) as like_count, SUM(quote_count) as quote_count
+            Y AS (
+            SELECT user_id, twitter_username, one_day_sales, one_day_average_price
+            FROM tw_user JOIN X ON username = X.twitter_username
+            ORDER BY followers_count DESC, one_day_average_price DESC
+            LIMIT 1
+            ),
+            Z AS (
+            SELECT author_id, SUM(retweet_count) as retweet_count, SUM(reply_count) as reply_count, SUM(like_count) as like_count
             FROM tw_tweet
-            WHERE created_at LIKE '${dateSeachStr}'
-            GROUP BY query
+            WHERE created_at LIKE '${dateSearchStr}'
+            GROUP BY author_id
             )
-            SELECT slug, SUM(reply_count) as reply_count, SUM(retweet_count) as retweet_count, SUM(like_count) as like_count, SUM(quote_count) as quote_count, MAX(one_day_sales) as one_day_sales, MAX(one_day_average_price) as one_day_average_price, '${dateSearchStr.slice(0, -1)}' as date
-            FROM opensea, tweet
-            WHERE tweet.query = opensea.slug OR tweet.query LIKE CONCAT('%', opensea.slug, '%')
-            GROUP BY slug;
+            
+            SELECT retweet_count, reply_count, like_count, one_day_sales, one_day_average_price, '${dateSearchStr.slice(0, -1)}' as date
+            FROM Y, Z
+            WHERE Y.user_id = Z.author_id;
         `;
         mysqlConnection.query(queryStr, (err, results) => {
             if (err) rej(err);

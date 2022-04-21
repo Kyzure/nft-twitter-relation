@@ -333,8 +333,8 @@ function SideDrawer(props) {
   // Remove when needed
   function Testing() {
     // SlugTweetAllInfo("Apr 16 2022 00:00:00 UTC")
-    TwitterUsernameSingleInfo("axie", "Apr 16 2022 00:00:00 UTC", "Apr 21 2022 00:00:00 UTC")
-    // SlugTweetSingleInfo("axie", "Apr 16 2022 00:00:00 UTC", "Apr 21 2022 00:00:00 UTC")
+    // TwitterUsernameSingleInfo("axie", "Apr 16 2022 00:00:00 UTC", "Apr 21 2022 00:00:00 UTC")
+    SlugTweetSingleInfo("axie", "Apr 16 2022 00:00:00 UTC", "Apr 21 2022 00:00:00 UTC")
     // SlugTweetSingleInfoOnlyTweets("axie", "Apr 14 2022 00:00:00 UTC", "Apr 21 2022 00:00:00 UTC")
   }
 
