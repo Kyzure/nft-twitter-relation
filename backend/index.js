@@ -99,22 +99,22 @@ app.get('/slug-tweet-all-info', (req, res) => {
 
 // Twitter usename single info instead of slug and tweet
 app.get('/twitter-username-single-info', async (req, res) => {
-    SingleInfo("A", req, res);
+    await SingleInfo("A", req, res);
 });
 
 // We use slug to search for tweets for popularity measure here too
 // This one takes in date and NFT name to display out that particular's date sales and popularity
 app.get('/slug-tweet-single-info', async (req, res) => {
-    SingleInfo("B", req, res);
+    await SingleInfo("B", req, res);
 });
 
 app.get('/slug-tweet-single-info-only-tweets', async (req, res) => {
-    SingleInfo("C", req, res);
+    await SingleInfo("C", req, res);
 });
 
 
 
-function SingleInfo(type, req, res) {
+async function SingleInfo(type, req, res) {
     const query = req.query;
     if (!query || !query.startDate || !query.endDate || !query.slug) {
         res.status(400).send("Missing startDate / endDate in req body");
