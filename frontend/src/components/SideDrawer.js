@@ -324,6 +324,16 @@ function SideDrawer(props) {
     GetAxiosData(path, query);
   }
 
+  function SlugTweetSingleInfoOnlyTweets(nft, startDate, endDate) {
+    const path = "slug-tweet-single-info-only-tweets";
+    const query = {
+      slug: nft,
+      startDate: startDate,
+      endDate: endDate,
+    };
+    GetAxiosData(path, query);
+  }
+
   // Function to get data from backend.
   // path is the additional string added onto the url to GET from the right URL
   // query is an object stating the necessary requirements for the API
