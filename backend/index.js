@@ -135,6 +135,7 @@ async function SingleInfo(type, req, res) {
             } else {
                 tweets = await getTweetInfoOneDateC(query.slug, startDate, req, res);
             }
+            tweets.date = convertDateTime(startDate)
             obj[i] = tweets;
             startDate = new Date(startDate.valueOf() + msInDay);
             i++
@@ -176,7 +177,7 @@ async function getTweetInfoOneDateA(slug, date) {
             GROUP BY author_id
             )
             
-            SELECT retweet_count, reply_count, like_count, one_day_sales, one_day_average_price, '${dateSearchStr.slice(0, -1)}'
+            SELECT retweet_count, reply_count, like_count, one_day_sales, one_day_average_price
             FROM Y, Z
             WHERE Y.user_id = Z.author_id;
         `;
@@ -210,7 +211,7 @@ async function getTweetInfoOneDateB(slug, date) {
             WHERE created_at LIKE '${dateSeachStr}'
             GROUP BY query
             )
-            SELECT slug, SUM(reply_count) as reply_count, SUM(retweet_count) as retweet_count, SUM(like_count) as like_count, SUM(quote_count) as quote_count, MAX(one_day_sales) as one_day_sales, MAX(one_day_average_price) as one_day_average_price, '${dateSearchStr.slice(0, -1)}'
+            SELECT slug, SUM(reply_count) as reply_count, SUM(retweet_count) as retweet_count, SUM(like_count) as like_count, SUM(quote_count) as quote_count, MAX(one_day_sales) as one_day_sales, MAX(one_day_average_price) as one_day_average_price
             FROM opensea, tweet
             WHERE tweet.query = opensea.slug OR tweet.query LIKE CONCAT('%', opensea.slug, '%')
             GROUP BY slug;
@@ -245,7 +246,7 @@ async function getTweetInfoOneDateC(slug, date) {
             WHERE created_at LIKE '${dateSeachStr}' AND text NOT LIKE 'RT @%'
             GROUP BY query
             )
-            SELECT slug, SUM(retweet_count) as retweet_count, SUM(like_count) as like_count, SUM(reply_count) as reply_count, SUM(quote_count) as quote_count, MAX(floor_price) as floor_price, MAX(market_cap) as market_cap, MAX(total_volume) as total_volume, MAX(total_sales) as total_sales, MAX(total_supply) as total_supply, MAX(count) as count, MAX(average_price) as average_price, MAX(num_owners) as num_owners, '${dateSearchStr.slice(0, -1)}'
+            SELECT slug, SUM(retweet_count) as retweet_count, SUM(like_count) as like_count, SUM(reply_count) as reply_count, SUM(quote_count) as quote_count, MAX(floor_price) as floor_price, MAX(market_cap) as market_cap, MAX(total_volume) as total_volume, MAX(total_sales) as total_sales, MAX(total_supply) as total_supply, MAX(count) as count, MAX(average_price) as average_price, MAX(num_owners) as num_owners
             FROM opensea, tweet
             WHERE tweet.query = opensea.slug OR tweet.query LIKE CONCAT('%', opensea.slug, '%')
             GROUP BY slug;
