@@ -182,7 +182,8 @@ async function getTweetInfoOneDateA(slug, date) {
         `;
         mysqlConnection.query(queryStr, (err, results) => {
             if (err) rej(err);
-            results.date = sd
+            let potato = results
+            potato.date = "among us"
             res(results);
         });
     });
