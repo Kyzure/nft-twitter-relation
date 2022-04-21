@@ -99,51 +99,67 @@ app.get('/slug-tweet-all-info', (req, res) => {
 
 // Twitter usename single info instead of slug and tweet
 app.get('/twitter-username-single-info', async (req, res) => {
-    await SingleInfo("A", req, res);
+    try {
+        await SingleInfo("A", req, res);
+        res.send(obj);
+    } catch (err) {
+        res.status(500).send(err);
+    } 
 });
 
 // We use slug to search for tweets for popularity measure here too
 // This one takes in date and NFT name to display out that particular's date sales and popularity
 app.get('/slug-tweet-single-info', async (req, res) => {
-    await SingleInfo("B", req, res);
+    try {
+        await SingleInfo("A", req, res);
+        res.send(obj);
+    } catch (err) {
+        res.status(500).send(err);
+    } 
 });
 
 app.get('/slug-tweet-single-info-only-tweets', async (req, res) => {
-    await SingleInfo("C", req, res);
+    try {
+        await SingleInfo("A", req, res);
+        res.send(obj);
+    } catch (err) {
+        res.status(500).send(err);
+    } 
 });
 
 
 
 async function SingleInfo(type, req, res) {
-    const query = req.query;
-    if (!query || !query.startDate || !query.endDate || !query.slug) {
-        res.status(400).send("Missing startDate / endDate in req body");
-        return;
-    }
-    let startDate = new Date(new Date(body.startDate).setUTCHours(0, 0, 0, 0));
-    const endDate = new Date(new Date(body.endDate).setUTCHours(0, 0, 0, 0));
-    const msInDay = 1000 * 60 * 60 * 24;
-    const obj = [];
-    let i = 0;
-    while (startDate <= endDate) {
-        try {
-            let tweets = null
-            if (type === "A") {
-                tweets = await getTweetInfoOneDateA(query.slug, startDate, req, res);
-            } else if (type === "B") {
-                tweets = await getTweetInfoOneDateB(query.slug, startDate, req, res);
-            } else {
-                tweets = await getTweetInfoOneDateC(query.slug, startDate, req, res);
-            }
-            obj[i] = tweets;
-            startDate = new Date(startDate.valueOf() + msInDay);
-            i++
-        } catch (err) {
-            res.status(500).send(err);
+    return new Promise((res, rej) => {
+        const query = req.query;
+        if (!query || !query.startDate || !query.endDate || !query.slug) {
+            res.status(400).send("Missing startDate / endDate in req body");
             return;
         }
-    }
-    res.send(obj);
+        let startDate = new Date(new Date(body.startDate).setUTCHours(0, 0, 0, 0));
+        const endDate = new Date(new Date(body.endDate).setUTCHours(0, 0, 0, 0));
+        const msInDay = 1000 * 60 * 60 * 24;
+        const obj = [];
+        let i = 0;
+        while (startDate <= endDate) {
+            try {
+                let tweets = null
+                if (type === "A") {
+                    tweets = await getTweetInfoOneDateA(query.slug, startDate, req, res);
+                } else if (type === "B") {
+                    tweets = await getTweetInfoOneDateB(query.slug, startDate, req, res);
+                } else {
+                    tweets = await getTweetInfoOneDateC(query.slug, startDate, req, res);
+                }
+                obj[i] = tweets;
+                startDate = new Date(startDate.valueOf() + msInDay);
+                i++
+            } catch (err) {
+                rej(err)
+            }
+        }
+        res(obj);
+    })
 }
 
 async function getTweetInfoOneDateA(slug, date) {
