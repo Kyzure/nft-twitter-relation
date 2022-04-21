@@ -5,7 +5,7 @@ const mysqlConnection = require("./db/mysql");
 
 const app = express();
 const cors = require('cors');
-const convertDateTime = (date) => { return "'" + date.toISOString().slice(0, 19).replace('T', ' ').replace('-', '/').replace('-', '/') + "'"};
+const convertDateTime = (date) => { return date.toISOString().slice(0, 19).replace('T', ' ').replace('-', '/').replace('-', '/')};
 
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -45,7 +45,7 @@ app.get('/twitter-username-all-info', (req, res) => {
     WITH opensea_latest AS (
         SELECT slug, MAX(average_price) as average_price, MAX(floor_price) as floor_price, MAX(total_volume) as total_volume, MAX(total_sales) as total_sales, MAX(total_supply) as total_supply, MAX(count) as count, MAX(num_owners) as num_owners, MAX(market_cap) as market_cap, MAX(twitter_username) as twitter_username, MAX(created) as created
         FROM opensea_top100
-        WHERE created between ${sd} AND ${ed} AND twitter_username IS NOT NULL
+        WHERE created between '${sd}' AND '${ed}' AND twitter_username IS NOT NULL
         GROUP BY slug
       ), Z AS (
         SELECT author_id, SUM(retweet_count) as retweet_count, SUM(reply_count) as reply_count, SUM(like_count) as like_count
@@ -55,7 +55,7 @@ app.get('/twitter-username-all-info', (req, res) => {
       SELECT DISTINCT opensea_latest.slug, opensea_latest.average_price, opensea_latest.floor_price, opensea_latest.total_volume, opensea_latest.total_sales, opensea_latest.total_supply, opensea_latest.count, opensea_latest.num_owners, opensea_latest.market_cap, Z.retweet_count, Z.reply_count,tw_user.followers_count, tw_user.tweet_count
       FROM opensea_latest, tw_user, Z
       WHERE opensea_latest.twitter_username = tw_user.username AND tw_user.user_id = Z.author_id
-      AND tw_user.created between ${sd} and ${ed};`, (err, results) => {
+      AND tw_user.created between '${sd}' and '${ed}';`, (err, results) => {
         if (err) res.status(500).send(err);
         res.send(results);
     });
@@ -79,12 +79,12 @@ app.get('/slug-tweet-all-info', (req, res) => {
         WITH tweet AS (
             SELECT author_id, query, retweet_count, like_count, reply_count, quote_count
             FROM tw_tweet
-            WHERE created <= ${ed}
+            WHERE created <= '${ed}'
         ),
         opensea AS (
             SELECT slug, MAX(floor_price) as floor_price, MAX(market_cap) as market_cap, MAX(total_volume) as total_volume, MAX(total_sales) as total_sales, MAX(total_supply) as total_supply, MAX(count) as count, MAX(average_price) as average_price, MAX(num_owners) as num_owners
             FROM opensea_top100
-            WHERE created between ${sd} AND ${ed}
+            WHERE created between '${sd}' AND '${ed}'
             GROUP BY slug
         )
         SELECT slug, SUM(retweet_count) as retweet_count, SUM(like_count) as like_count, SUM(reply_count) as reply_count, SUM(quote_count) as quote_count, MAX(floor_price) as floor_price, MAX(market_cap) as market_cap, MAX(total_volume) as total_volume, MAX(total_sales) as total_sales, MAX(total_supply) as total_supply, MAX(count) as count, MAX(average_price) as average_price, MAX(num_owners) as num_owners
@@ -160,7 +160,7 @@ async function getTweetInfoOneDateA(slug, date) {
             WITH X AS (
             SELECT twitter_username, MAX(one_day_sales) as one_day_sales, MAX(one_day_average_price) as one_day_average_price
             FROM opensea_top100
-            WHERE slug = '${slug}' AND created BETWEEN ${sd} AND ${ed} AND twitter_username IS NOT NULL
+            WHERE slug = '${slug}' AND created BETWEEN '${sd}' AND '${ed}' AND twitter_username IS NOT NULL
             GROUP BY twitter_username
             ),
             Y AS (
@@ -201,7 +201,7 @@ async function getTweetInfoOneDateB(slug, date) {
             WITH opensea AS (
             SELECT slug, MAX(one_day_sales) as one_day_sales, MAX(one_day_average_price) as one_day_average_price
             FROM opensea_top100
-            WHERE slug = '${slug}' AND created BETWEEN ${sd} AND ${ed}
+            WHERE slug = '${slug}' AND created BETWEEN '${sd}' AND '${ed}'
             GROUP BY slug
             ),
             tweet AS (
@@ -236,7 +236,7 @@ async function getTweetInfoOneDateC(slug, date) {
             WITH opensea AS (
             SELECT slug, MAX(floor_price) as floor_price, MAX(market_cap) as market_cap, MAX(total_volume) as total_volume, MAX(total_sales) as total_sales, MAX(total_supply) as total_supply, MAX(count) as count, MAX(average_price) as average_price, MAX(num_owners) as num_owners
             FROM opensea_top100
-            WHERE slug = '${slug}' AND created BETWEEN ${sd} AND ${ed}
+            WHERE slug = '${slug}' AND created BETWEEN '${sd}' AND '${ed}'
             GROUP BY slug
             ),
             tweet AS (
