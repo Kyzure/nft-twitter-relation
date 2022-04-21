@@ -236,7 +236,7 @@ async function getTweetInfoOneDateC(slug, date, req, res) {
             WHERE created_at LIKE '${dateSeachStr}' AND text NOT LIKE 'RT @%'
             GROUP BY query
             )
-            SELECT slug, SUM(reply_count), SUM(retweet_count), SUM(like_count), SUM(quote_count), MAX(one_day_sales), MAX(one_day_average_price), '${dateSearchStr.slice(0, -1)}'
+            SELECT slug, SUM(reply_count), SUM(retweet_count), SUM(like_count), SUM(quote_count), SUM(retweet_count), SUM(like_count), SUM(reply_count), SUM(quote_count), MAX(floor_price), MAX(market_cap), MAX(total_volume), MAX(total_sales), MAX(total_supply), MAX(count), MAX(average_price), MAX(num_owners), '${dateSearchStr.slice(0, -1)}'
             FROM opensea, tweet
             WHERE tweet.query = opensea.slug OR tweet.query LIKE CONCAT('%', opensea.slug, '%')
             GROUP BY slug;
