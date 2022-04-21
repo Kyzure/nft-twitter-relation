@@ -135,7 +135,6 @@ async function SingleInfo(type, req, res) {
             } else {
                 tweets = await getTweetInfoOneDateC(query.slug, startDate, req, res);
             }
-            tweets.date = convertDateTime(startDate)
             obj[i] = tweets;
             startDate = new Date(startDate.valueOf() + msInDay);
             i++
@@ -183,6 +182,7 @@ async function getTweetInfoOneDateA(slug, date) {
         `;
         mysqlConnection.query(queryStr, (err, results) => {
             if (err) rej(err);
+            results.date = sd
             res(results);
         });
     });
@@ -218,6 +218,7 @@ async function getTweetInfoOneDateB(slug, date) {
         `;
         mysqlConnection.query(queryStr, (err, results) => {
             if (err) rej(err);
+            results.date = sd
             res(results);
         });
     });
@@ -253,6 +254,7 @@ async function getTweetInfoOneDateC(slug, date) {
         `;
         mysqlConnection.query(queryStr, (err, results) => {
             if (err) rej(err);
+            results.date = sd
             res(results);
         });
     });
