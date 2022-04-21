@@ -48,17 +48,29 @@ function MultiChart(props) {
       },
     },
     scales: {
+      x: {
+        grid: {
+          drawOnChartArea: true,
+          color: "#454545",
+        },
+      },
       y: {
+        min: 0,
         type: "linear" as const,
         display: true,
         position: "left" as const,
+        grid: {
+          drawOnChartArea: true,
+          color: "#454545",
+        },
       },
       y1: {
+        min: 0,
         type: "linear" as const,
         display: true,
         position: "right" as const,
         grid: {
-          drawOnChartArea: true,
+          drawOnChartArea: false,
           color: "#454545",
         },
       },
