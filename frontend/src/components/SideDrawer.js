@@ -336,14 +336,16 @@ function SideDrawer(props) {
 
   // Remove when needed
   function Testing() {
+    SlugTweetAllInfo("Apr 16 2022 00:00:00 UTC")
+    // SlugTweetSingleInfo("")
+    // SlugTweetSingleInfoOnlyTweets("")
   }
 
   // Function to get data from backend.
   // path is the additional string added onto the url to GET from the right URL
   // query is an object stating the necessary requirements for the API
   function GetAxiosData(path, query) {
-    // http://139.99.72.60:4000/tweets
-    // http://139.99.72.60:4000/all-collections-info
+    // Example date: "Apr 8 2022 00:00:00 UTC"
     axios({
       method: "GET",
       url: "http://139.99.72.60:4000/" + path,
@@ -361,7 +363,6 @@ function SideDrawer(props) {
       if (collection.length === 1) {
         for (var key in res.data) {
           if (res.data[key].length > 0) {
-            console.log(res.data[key][0]["one_day_sales"]);
             data.xData.push(key);
             data.yData.push(res.data[key][0][yAxis]);
             data.y1Data.push(res.data[key][0][y1Axis]);
@@ -377,7 +378,6 @@ function SideDrawer(props) {
           data.yData.push(f[yAxis]);
           data.y1Data.push(f[y1Axis]);
         });
-        console.log(filtered);
         props.setData(data);
       }
     });
