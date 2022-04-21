@@ -184,7 +184,7 @@ async function getTweetInfoOneDateA(slug, date) {
             if (err) rej(err);
             let potato = results
             potato.date = "among us"
-            res(results);
+            res(potato);
         });
     });
 }
