@@ -139,7 +139,7 @@ async function SingleInfo(type, req, res) {
             startDate = new Date(startDate.valueOf() + msInDay);
             i++
         } catch (err) {
-            res.status(500).send(err + "Amongus");
+            res.status(500).send(err);
             return;
         }
     }
@@ -164,7 +164,7 @@ async function getTweetInfoOneDateA(slug, date) {
             GROUP BY twitter_username
             ),
             Y AS (
-            SELECT user_id, twitter_username, one_day_sales, one_day_average_price, floor_price, market_cap, total_volume, total_sales, total_supply, total_count, average_price, num_owners
+            SELECT user_id, twitter_username, one_day_sales, one_day_average_price, floor_price, market_cap, total_volume, total_sales, total_supply, count, average_price, num_owners
             FROM tw_user JOIN X ON username = X.twitter_username
             ORDER BY followers_count DESC, one_day_average_price DESC
             LIMIT 1
@@ -176,7 +176,7 @@ async function getTweetInfoOneDateA(slug, date) {
             GROUP BY author_id
             )
             
-            SELECT retweet_count, reply_count, like_count, quote_count, one_day_sales, one_day_average_price, floor_price, market_cap, total_volume, total_sales, total_supply, total_count, average_price, num_owners, '${dateSearchStr.slice(0, -1)}' as date
+            SELECT retweet_count, reply_count, like_count, quote_count, one_day_sales, one_day_average_price, floor_price, market_cap, total_volume, total_sales, total_supply, count, average_price, num_owners, '${dateSearchStr.slice(0, -1)}' as date
             FROM Y, Z
             WHERE Y.user_id = Z.author_id;
         `;
