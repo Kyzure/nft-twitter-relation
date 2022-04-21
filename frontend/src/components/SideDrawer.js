@@ -86,12 +86,20 @@ function SideDrawer(props) {
 
   const [collection, setCollection] = React.useState([]);
   const [startDate, setStartDate] = React.useState(
-    new Date("April 15, 2022 00:00:00")
+    new Date("April 16, 2022 00:00:00")
   );
   const [endDate, setEndDate] = React.useState(new Date());
   const [yAxis, setYAxis] = React.useState("");
   const [y1Axis, setY1Axis] = React.useState("");
 
+  const singleNFTAxisOptions = [
+    "retweet_count",
+    "reply_count",
+    "like_count",
+    "one_day_sales",
+    "one_day_average_price"
+  ];
+  const singleNFTAxisMenuItems = singleNFTAxisOptions.map(option => <MenuItem key={option} value={option}>{option}</MenuItem>)
   const multiNFTAxisOptions = [
     "average_price",
     "count",
@@ -192,13 +200,7 @@ function SideDrawer(props) {
                   setYAxis(event.target.value);
                 }}
               >
-                <MenuItem value={"retweet_count"}>retweet_count</MenuItem>
-                <MenuItem value={"reply_count"}>reply_count</MenuItem>
-                <MenuItem value={"like_count"}>like_count</MenuItem>
-                <MenuItem value={"one_day_sales"}>one_day_sales</MenuItem>
-                <MenuItem value={"one_day_average_price"}>
-                  one_day_average_price
-                </MenuItem>
+                { singleNFTAxisMenuItems }
               </Select>
             </FormControl>
             <FormControl>
@@ -212,13 +214,7 @@ function SideDrawer(props) {
                   setY1Axis(event.target.value);
                 }}
               >
-                <MenuItem value={"retweet_count"}>retweet_count</MenuItem>
-                <MenuItem value={"reply_count"}>reply_count</MenuItem>
-                <MenuItem value={"like_count"}>like_count</MenuItem>
-                <MenuItem value={"one_day_sales"}>one_day_sales</MenuItem>
-                <MenuItem value={"one_day_average_price"}>
-                  one_day_average_price
-                </MenuItem>
+                { singleNFTAxisMenuItems }
               </Select>
             </FormControl>
           </ThemeProvider>
