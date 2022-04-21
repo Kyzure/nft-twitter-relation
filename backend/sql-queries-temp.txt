@@ -15,7 +15,9 @@ GROUP BY slug;
 
 
 
-
+SELECT query, text 
+FROM tw_tweet WHERE text 
+LIKE 'RT @%' LIMIT 10;
 
 
 WITH opensea AS (
