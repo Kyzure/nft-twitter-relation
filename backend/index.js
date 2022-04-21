@@ -207,7 +207,7 @@ async function getTweetInfoOneDateB(slug, date) {
             tweet AS (
             SELECT query, SUM(retweet_count) as retweet_count, SUM(reply_count) as reply_count, SUM(like_count) as like_count, SUM(quote_count) as quote_count
             FROM tw_tweet
-            WHERE created_at LIKE '${dateSeachStr}'
+            WHERE created_at LIKE '${dateSearchStr}'
             GROUP BY query
             )
             SELECT slug, SUM(reply_count) as reply_count, SUM(retweet_count) as retweet_count, SUM(like_count) as like_count, SUM(quote_count) as quote_count, MAX(one_day_sales) as one_day_sales, MAX(one_day_average_price) as one_day_average_price, '${dateSearchStr.slice(0, -1)}' as date
@@ -242,7 +242,7 @@ async function getTweetInfoOneDateC(slug, date) {
             tweet AS (
             SELECT query, SUM(retweet_count) as retweet_count, SUM(reply_count) as reply_count, SUM(like_count) as like_count, SUM(quote_count) as quote_count
             FROM tw_tweet
-            WHERE created_at LIKE '${dateSeachStr}' AND text NOT LIKE 'RT @%'
+            WHERE created_at LIKE '${dateSearchStr}' AND text NOT LIKE 'RT @%'
             GROUP BY query
             )
             SELECT slug, SUM(retweet_count) as retweet_count, SUM(like_count) as like_count, SUM(reply_count) as reply_count, SUM(quote_count) as quote_count, MAX(floor_price) as floor_price, MAX(market_cap) as market_cap, MAX(total_volume) as total_volume, MAX(total_sales) as total_sales, MAX(total_supply) as total_supply, MAX(count) as count, MAX(average_price) as average_price, MAX(num_owners) as num_owners, '${dateSearchStr.slice(0, -1)}' as date
