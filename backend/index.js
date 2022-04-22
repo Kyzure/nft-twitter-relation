@@ -48,11 +48,11 @@ app.get('/twitter-username-all-info', (req, res) => {
         WHERE created between '${sd}' AND '${ed}' AND twitter_username IS NOT NULL
         GROUP BY slug
       ), Z AS (
-        SELECT author_id, SUM(retweet_count) as retweet_count, SUM(reply_count) as reply_count, SUM(like_count) as like_count
+        SELECT author_id, SUM(retweet_count) as retweet_count, SUM(reply_count) as reply_count, SUM(like_count) as like_count, SUM(quote_count) as quote_count
         FROM tw_tweet
         GROUP BY author_id
       )
-      SELECT DISTINCT opensea_latest.slug, opensea_latest.average_price, opensea_latest.floor_price, opensea_latest.total_volume, opensea_latest.total_sales, opensea_latest.total_supply, opensea_latest.count, opensea_latest.num_owners, opensea_latest.market_cap, Z.retweet_count, Z.reply_count,tw_user.followers_count, tw_user.tweet_count
+      SELECT DISTINCT opensea_latest.slug, opensea_latest.average_price, opensea_latest.floor_price, opensea_latest.total_volume, opensea_latest.total_sales, opensea_latest.total_supply, opensea_latest.count, opensea_latest.num_owners, opensea_latest.market_cap, Z.retweet_count, Z.reply_count, Z.like_count, Z.quote_count, tw_user.followers_count, tw_user.tweet_count
       FROM opensea_latest, tw_user, Z
       WHERE opensea_latest.twitter_username = tw_user.username AND tw_user.user_id = Z.author_id
       AND tw_user.created between '${sd}' and '${ed}';`, (err, results) => {
