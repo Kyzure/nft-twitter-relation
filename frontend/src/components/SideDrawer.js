@@ -115,8 +115,10 @@ function SideDrawer(props) {
   const selectCollections = (_event, newValue) => {
     // Only allow single collection for single collection graph type
     if (graphType === graphTypes[0] || graphType === graphTypes[2] || graphType === graphTypes[4]) {
-      setYAxis(singleNFTAxisOptions[0]);
-      setY1Axis(singleNFTAxisOptions[1]);
+      if (!singleNFTAxisOptions.includes(yAxis) || !singleNFTAxisOptions.includes(y1Axis)) {
+        setYAxis(singleNFTAxisOptions[0]);
+        setY1Axis(singleNFTAxisOptions[1]);
+      }
       if (newValue.length <= 1) {
         setCollection([...newValue]);
       }
@@ -124,8 +126,12 @@ function SideDrawer(props) {
 
     // Only allow up to 10 collections for multiple collection graph type
     if (graphType === graphTypes[1] || graphType === graphTypes[3]) {
-      setYAxis(multiNFTAxisOptions[0]);
-      setY1Axis(multiNFTAxisOptions[1]);
+      console.log(yAxis);
+      console.log(y1Axis)
+      if (!multiNFTAxisOptions.includes(yAxis) || !multiNFTAxisOptions.includes(y1Axis)) {
+        setYAxis(multiNFTAxisOptions[0]);
+        setY1Axis(multiNFTAxisOptions[1]);
+      }
       if (newValue.length <= 10) {
         setCollection([...newValue]);
       }
@@ -253,8 +259,8 @@ function SideDrawer(props) {
   ];
   const singleNFTAxisMenuItems = singleNFTAxisOptions.map(option => <MenuItem key={option} value={option}>{option}</MenuItem>)
   const multiNFTAxisMenuItems = multiNFTAxisOptions.map(option => <MenuItem key={option} value={option}> {option}</MenuItem>);
-  const [yAxis, setYAxis] = React.useState("");
-  const [y1Axis, setY1Axis] = React.useState("");
+  const [yAxis, setYAxis] = React.useState(singleNFTAxisOptions[0]);
+  const [y1Axis, setY1Axis] = React.useState(singleNFTAxisOptions[1]);
   function SelectAxis() {
     if (graphType === graphTypes[0] || graphType === graphTypes[2] || graphType === graphTypes[4]) {
       return (
@@ -458,6 +464,7 @@ function SideDrawer(props) {
       headers: { "Content-Type": "application/json" },
       params: query,
     }).then((res) => {
+      console.log(res.data);
       var data = {
         name: graphType,
         xData: [],
