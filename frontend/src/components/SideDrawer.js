@@ -240,6 +240,7 @@ function SideDrawer(props) {
     "average_price",
     "count",
     "floor_price",
+    "followers_count",
     "like_count",
     "market_cap",
     "num_owners",
@@ -255,75 +256,71 @@ function SideDrawer(props) {
   const [yAxis, setYAxis] = React.useState("");
   const [y1Axis, setY1Axis] = React.useState("");
   function SelectAxis() {
-    if (collection.length === 1) {
+    if (graphType === graphTypes[0] || graphType === graphTypes[2] || graphType === graphTypes[4]) {
       return (
-        <>
-          <ThemeProvider theme={secondTheme}>
-            <FormControl>
-              <InputLabel id="yAxisLabel">Select Y-Axis</InputLabel>
-              <Select
-                labelId="yAxisLabel"
-                id="Y-Axis"
-                value={yAxis}
-                label="Y-Axis"
-                onChange={(event) => {
-                  setYAxis(event.target.value);
-                }}
-              >
-                { singleNFTAxisMenuItems }
-              </Select>
-            </FormControl>
-            <FormControl>
-              <InputLabel id="y1AxisLabel">Select Y1-Axis</InputLabel>
-              <Select
-                labelId="y1AxisLabel"
-                id="Y1-Axis"
-                value={y1Axis}
-                label="Y1-Axis"
-                onChange={(event) => {
-                  setY1Axis(event.target.value);
-                }}
-              >
-                { singleNFTAxisMenuItems }
-              </Select>
-            </FormControl>
-          </ThemeProvider>
-        </>
+        <ThemeProvider theme={secondTheme}>
+          <FormControl>
+            <InputLabel id="yAxisLabel">Select Y-Axis</InputLabel>
+            <Select
+              labelId="yAxisLabel"
+              id="Y-Axis"
+              value={yAxis}
+              label="Y-Axis"
+              onChange={(event) => {
+                setYAxis(event.target.value);
+              }}
+            >
+              { singleNFTAxisMenuItems }
+            </Select>
+          </FormControl>
+          <FormControl>
+            <InputLabel id="y1AxisLabel">Select Y1-Axis</InputLabel>
+            <Select
+              labelId="y1AxisLabel"
+              id="Y1-Axis"
+              value={y1Axis}
+              label="Y1-Axis"
+              onChange={(event) => {
+                setY1Axis(event.target.value);
+              }}
+            >
+              { singleNFTAxisMenuItems }
+            </Select>
+          </FormControl>
+        </ThemeProvider>
       );
-    } else if (collection.length > 1) {
+    } else if (graphType === graphTypes[1] || graphType === graphTypes[3]) {
       return (
-        <>
-          <ThemeProvider theme={secondTheme}>
-            <FormControl>
-              <InputLabel id="yAxisLabel">Select Y-Axis</InputLabel>
-              <Select
-                labelId="yAxisLabel"
-                id="Y-Axis"
-                value={yAxis}
-                label="Y-Axis"
-                onChange={(event) => {
-                  setYAxis(event.target.value);
-                }}
-              >
-                {multiNFTAxisMenuItems}
-              </Select>
-            </FormControl>
-            <FormControl>
-              <InputLabel id="y1AxisLabel">Select Y1-Axis</InputLabel>
-              <Select
-                labelId="y1AxisLabel"
-                id="Y1-Axis"
-                value={y1Axis}
-                label="Y1-Axis"
-                onChange={(event) => {
-                  setY1Axis(event.target.value);
-                }}
-              >
-                {multiNFTAxisMenuItems}
-              </Select>
-            </FormControl>
-          </ThemeProvider>
-        </>
+        <ThemeProvider theme={secondTheme}>
+          <FormControl>
+            <InputLabel id="yAxisLabel">Select Y-Axis</InputLabel>
+            <Select
+              labelId="yAxisLabel"
+              id="Y-Axis"
+              value={yAxis}
+              label="Y-Axis"
+              onChange={(event) => {
+                setYAxis(event.target.value);
+              }}
+            >
+              {multiNFTAxisMenuItems}
+            </Select>
+          </FormControl>
+          <FormControl>
+            <InputLabel id="y1AxisLabel">Select Y1-Axis</InputLabel>
+            <Select
+              labelId="y1AxisLabel"
+              id="Y1-Axis"
+              value={y1Axis}
+              label="Y1-Axis"
+              onChange={(event) => {
+                setY1Axis(event.target.value);
+              }}
+            >
+              {multiNFTAxisMenuItems}
+            </Select>
+          </FormControl>
+        </ThemeProvider>
       );
     }
   }
@@ -447,7 +444,7 @@ function SideDrawer(props) {
     // TwitterUsernameAllInfo("Apr 16 2022 00:00:00 UTC") // not working
     // SlugTweetSingleInfo("axie", "Apr 16 2022 00:00:00 UTC", "Apr 21 2022 00:00:00 UTC")
     // SlugTweetAllInfo("Apr 16 2022 00:00:00 UTC")
-    SlugTweetSingleInfoOnlyTweets("axie", "Apr 14 2022 00:00:00 UTC", "Apr 21 2022 00:00:00 UTC")
+    // SlugTweetSingleInfoOnlyTweets("axie", "Apr 14 2022 00:00:00 UTC", "Apr 21 2022 00:00:00 UTC")
   }
 
   // Function to get data from backend.
